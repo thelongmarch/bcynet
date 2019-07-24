@@ -1,0 +1,66 @@
+//网页字体
+@f-font-family: 'MiscroSoft YaHei','微软雅黑','黑体',Arial,sans-serif;
+
+@s-main: #33CDE5;   //主色 绿色调调
+@s-text: #fff;   // 字体颜色
+@s-white: #fff; 
+@s-main-color: #333; //基本字体颜色
+@s-main-check:#00C1DE;
+@s-u-title: #ff720d;  //标题样式
+@s-text-btn: #409EFF;  //标题样式
+
+@s-ipt-width: 160px; //默认文本框宽度
+@s-border-color: #D7D8D9; //文本边框颜色
+@s-hover-bcolor: #616266; //hover时边框颜色
+@s-hover-shadowcolor: #e7e7e7; //hover时阴影颜色
+@s-dis-border-color: #d4d7d9; //禁用状态文本边框颜色
+@s-dis-color: #999; //禁用文本颜色
+
+@s-form-err-color: #ff3333; //form表单提交报错颜色
+
+@s-white: #fff;
+@s-black: #000;
+
+//文本-超小字
+.font-xs() {
+    font-family: @f-font-family;
+    font-size: 12px;
+}
+//文本-小字（默认） 正文、描述性文字
+.font-s() {
+    font-family: @f-font-family;
+    font-size: 14px;
+}
+//文本-中字 标题、表头及强调性文字
+.font-m() {
+    font-family: @f-font-family;
+    font-size: 16px;
+}
+//文本-大字
+.font-l() {
+    font-family: @f-font-family;
+    font-size: 18px;
+}
+//文本-超大字
+.font-xl() {
+    font-family: @f-font-family;
+    font-size: 24px;
+}
+
+//默认内容块阴影
+.default-box-shadow() {
+    box-shadow: 0 2px 5px @c-block-border;
+}
+
+.opacity (@opacity) {
+    @opacityPercentage: @opacity * 100;
+
+    opacity: @opacity;
+    -ms-filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=(@{opacityPercentage}))";
+    filter: ~"alpha(opacity = (@{opacityPercentage}))";
+}
+
+//去除上传文件进度条小图标
+.ivu-icon-document::before {
+    display: none;
+}

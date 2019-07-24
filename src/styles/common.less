@@ -1,0 +1,101 @@
+body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, li, a, em, p, h1, h2, h3, h4,h5, h6, i, b, textarea, button, input, select, figure, figcaption {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-style: normal;
+    text-decoration: none;
+    // border: none;
+    // border-bottom: 1px solid rgb(219, 219, 219);
+    //color: #333;
+    box-sizing: border-box;
+    font-family: "Microsoft Yahei",sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    -webkit-font-smoothing: antialiased;
+    // height: auto;
+    &:focus {
+        outline: none;
+    }
+}
+
+html,body{
+    height: 100%;
+    width: 100%;
+    background-color: #fff;
+    font-size: 16px;
+}
+
+#app{
+  height:100%;
+//   overflow: hidden;
+}
+
+.clear:after{
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.clear{
+    zoom:1;
+}
+
+.back_img{
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.margin{
+    margin: 0 auto;
+}
+
+.fl{
+    float: left;
+}
+
+.fr{
+    float: right;
+}
+
+.hide{
+    display: none;
+}
+
+.show{
+    display: block;
+}
+
+.ellipsis{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.ml{
+    margin-left: 0;
+}
+.mr{
+    margin-right: 0;
+}
+.mlMr{
+    margin-left: 0;
+    margin-right: 0;
+}
+.pl{
+    padding-left: 0;
+}
+.pr{
+    padding-right: 0;
+}
+.plPr{
+    padding-left: 0;
+    padding-right: 0;
+}
+
+// 全局popover样式
+.vux-popover{
+    background-color: #fff!important;
+}
+// 链接样式
+.alink{
+    color:#5F96E4;
+    text-decoration: underline;
+}
