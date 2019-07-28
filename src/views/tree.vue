@@ -46,11 +46,11 @@
 </template>
 
 <script>
-import pagination from "@/components/pagination";
+
 import globalFun from "@/common/common";
 export default {
   components: {
-    pagination
+    
   },
   data() {
     return {

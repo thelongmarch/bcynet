@@ -23,6 +23,6 @@ export default {
 <style>
 #app {
   color: rgb(51, 51, 51);
-  background-color: rgb(255, 255, 255);
+  background: #F5F5FA;
 }
 </style>

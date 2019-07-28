@@ -1,18 +1,20 @@
-const demo = () => import('@/views/demo')
+const home = () => import('@/views/home/index')
 const tree = () => import('@/views/tree')
-const dataDic = () => import('@/views/dataDic')
+const login = () => import('@/views/login/login')
+const register = () => import('@/views/login/register')
+
 
 const routes = [
 
   {
     path: '/',
-    redirect: '/dataDic'
+    redirect: '/home'
   }, {
-    // demo
-    path: '/demo',
-    name: 'demo',
-    component: demo,
-    meta: {title: '测试页面'}
+    // home
+    path: '/home',
+    name: 'home',
+    component: home,
+    meta: {title: '首页'}
   }, {
     // tree
     path: '/tree',
@@ -20,11 +22,17 @@ const routes = [
     component: tree,
     meta: {title: 'tree'}
   }, {
-    // dataDic
-    path: '/dataDic',
-    name: 'dataDic',
-    component: dataDic,
-    meta: {title: '字典管理'}
+    // login
+    path: '/login',
+    name: 'login',
+    component: login,
+    meta: {title: '登录'}
+  }, {
+    // register
+    path: '/register',
+    name: 'register',
+    component: register,
+    meta: {title: '注册'}
   }
 ]
 

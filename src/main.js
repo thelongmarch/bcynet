@@ -14,22 +14,15 @@ import store from './store'
 // 封装引入axios
 import fetch from '@/service/axios'
 // 引入Vant
-import VueQuillEditor from 'vue-quill-editor'
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-Vue.use(VueQuillEditor)
+
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 
 import './styles/common.less'
 
-import "./styles/jsti_reset.less"
-// import "./styles/elementUI_reset.less"
-// import "./styles/shop+reset.less"
 
-Vue.use(VueQuillEditor)
+
 window.Promise = require('promise')
 
 Vue.use(ElementUI)
