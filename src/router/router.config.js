@@ -8,7 +8,7 @@ const routes = [
 
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/login'
   }, {
     // home
     path: '/home',

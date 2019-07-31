@@ -2,7 +2,7 @@
   <div class="header-main">
     <div class="left-main">
       <img :src="log" alt class="log" @click="goWebsit" />
-      <router-link to="/tree" class="link-list">首页</router-link>
+      <router-link to="/" class="link-list">首页</router-link>
       <router-link to="/" class="link-list">绘画</router-link>
       <router-link to="/" class="link-list">写作</router-link>
       <router-link to="/" class="link-list">COS</router-link>
@@ -69,7 +69,7 @@ export default {
   computed: {},
   methods: {
     goWebsit() {
-      this.$router.push("/home");
+      this.$router.push("/");
     },
     handleCurrentChange(val) {
       this.$emit("currentChange", val);

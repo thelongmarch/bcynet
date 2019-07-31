@@ -290,7 +290,7 @@ export default {
 };
 </script>
 
-<style  lang="less">
+<style scoped  lang="less">
 // 设置高亮显示样式
 .el-tree-node.is-current > .el-tree-node__content {
   background-color: #c2d6ea !important;
