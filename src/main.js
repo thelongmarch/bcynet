@@ -26,6 +26,10 @@ import './styles/common.less'
 window.Promise = require('promise')
 
 Vue.use(ElementUI)
+import waterfall from 'vue-waterfall2'
+// import waterfall from '../lib'
+
+Vue.use(waterfall)
 
 Vue.config.productionTip = false
 Object.defineProperty(Vue.prototype, '$axios', { value: fetch })

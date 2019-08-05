@@ -21,7 +21,12 @@
           </div>
           <!-- 瀑布流 -->
           <div class="feed-wrapper">
-
+            <vue-waterfall-easy :imgsArr="imgsArr" @scrollReachBottom="getData">
+                <div class="img-info" slot-scope="props">
+                  <p class="some-info">picture index: {{props.index}}</p>
+                  <p class="some-info">{{props.value.info}}</p>
+                </div>
+            </vue-waterfall-easy>
           </div>
           <!--  -->
         </div>
@@ -99,7 +104,7 @@
           </div>
           <!-- download -->
           <div class="download-banner">
-            <img :src="download" width="100%"/>
+            <img :src="download" width="100%" />
           </div>
           <!--  -->
         </div>
@@ -124,12 +129,15 @@ import download from "@/assets/download.png";
 import "swiper/dist/css/swiper.css";
 
 import { swiper, swiperSlide } from "vue-awesome-swiper";
+import vueWaterfallEasy from 'vue-waterfall-easy';
+import axios from 'axios'
 
 export default {
   components: {
     Top,
     swiper,
-    swiperSlide
+    swiperSlide,
+    vueWaterfallEasy
   },
   data() {
     return {
@@ -163,7 +171,11 @@ export default {
         phone: "手机号",
         password: "短信验证码"
       },
-      download:download,//下载图片
+      download: download, //下载图片
+      imgsArr: [],
+      group: 0, // 当前加载的加载图片的次数
+      pullDownDistance: 0
+      
     };
   },
   created() {},
@@ -172,6 +184,7 @@ export default {
     swiper() {
       return this.$refs.mySwiper.swiper;
     }
+   
   },
   methods: {
     /* *************promise****************************** */
@@ -203,6 +216,18 @@ export default {
         };
       }
     },
+    getData() {
+      axios.get('./static/mock/data.json?group=' + this.group) // 真实环境中，后端会根据参数group返回新的图片数组，这里我用一个静态json文件模拟
+        .then(res => {
+          debugger
+          this.group++
+          if (this.group === 10) { // 模拟已经无新数据，显示 slot="waterfall-over"
+            this.$refs.waterfall.waterfallOver()
+            return
+          }
+          this.imgsArr = this.imgsArr.concat(res.data)
+        })
+    },
     init() {
       // setInterval(() => {
       //   console.log("simulate async data");
@@ -211,7 +236,10 @@ export default {
       //     this.swiperSlides.push(this.swiperSlides.length + 1);
       //   }
       // }, 3000);
-    }
+     this.getData()
+      
+    },
+    
   },
   mounted() {
     // this.swiper.slideTo(5);
@@ -235,26 +263,28 @@ export default {
   height: 100%;
   width: 100%;
 }
-.main { 
+.main {
   height: 100%;
 }
-.header-spe{
-    z-index: 101;
-    position: fixed;
-    top: 0;
+.header-spe {
+  z-index: 101;
+  position: fixed;
+  top: 0;
 }
 .page-main {
   width: 1200px;
   margin: 70px auto 0;
   border: 1px solid;
+  height: 100%;
   .left-main {
     width: 870px;
     min-width: 870px;
-    float: left;   
+    float: left;
+    height: 100%;
   }
   .right-main {
     width: 300px;
-    float: right;   
+    float: right;
   }
 }
 
@@ -387,7 +417,8 @@ export default {
 }
 /* 瀑布流 */
 .feed-wrapper {
-    width: 100%;
-    margin-top: 30px;
+  width: 100%;
+  margin-top: 30px;
 }
+
 </style>
