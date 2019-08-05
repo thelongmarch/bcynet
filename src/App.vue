@@ -21,8 +21,11 @@ export default {
 </script>
 
 <style>
+body{
+  background: #F5F5FA;
+}
 #app {
   color: rgb(51, 51, 51);
-  background: #F5F5FA;
+  
 }
 </style>
