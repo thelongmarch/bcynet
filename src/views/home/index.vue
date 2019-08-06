@@ -21,7 +21,33 @@
           </div>
           <!-- 瀑布流 -->
           <div class="feed-wrapper">
-
+            <div id="vue-instance" class="container">
+              <div
+                v-masonry
+                transition-duration="0.3s"
+                item-selector=".item"
+                :origin-top="true"
+                :horizontal-order="false"
+              >
+                <div class="row">
+                  <div v-masonry-tile class="col-md-4" v-for="(post, index) in posts">
+                    <div class="card m-4" style="width: 18rem;">
+                      <img
+                        class="card-img-top"
+                        src="http://via.placeholder.com/350x150"
+                        alt="Card image cap"
+                      />
+                      <div class="card-body">
+                        <h5 class="card-title">
+                          <strong>{{ post.title }}</strong>
+                        </h5>
+                        <p class="card-text">{{ smartTrim(post.content, 100) }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <!--  -->
         </div>
@@ -99,7 +125,7 @@
           </div>
           <!-- download -->
           <div class="download-banner">
-            <img :src="download" width="100%"/>
+            <img :src="download" width="100%" />
           </div>
           <!--  -->
         </div>
@@ -163,10 +189,14 @@ export default {
         phone: "手机号",
         password: "短信验证码"
       },
-      download:download,//下载图片
+      download: download, //下载图片
+      posts: []
     };
   },
-  created() {},
+  created() {
+    window.addEventListener("scroll", this.handleScroll);
+    this.getPosts();
+  },
   //定义这个sweiper对象
   computed: {
     swiper() {
@@ -203,6 +233,42 @@ export default {
         };
       }
     },
+    randomString(len) {
+      len = len || 32;
+      var $chars =
+        "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678"; /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+      var maxPos = $chars.length;
+      var pwd = "";
+      for (var i = 0; i < len; i++) {
+        pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+      }
+      return pwd;
+    },
+    getPosts() {
+      for (var i = 0; i < 16; i++) {
+        this.posts.push({
+          title: this.randomString(30),
+          content: this.randomString(100)
+        });
+      }
+    },
+    handleScroll() {
+      let scrollHeight = window.scrollY;
+      let maxHeight =
+        window.document.body.scrollHeight -
+        window.document.documentElement.clientHeight;
+
+      if (scrollHeight >= maxHeight - 200) {
+        this.getPosts();
+      }
+    },
+    smartTrim(string, maxLength) {
+      var trimmedString = string.substr(0, maxLength);
+      return trimmedString.substr(
+        0,
+        Math.min(trimmedString.length, trimmedString.lastIndexOf(" "))
+      );
+    },
     init() {
       // setInterval(() => {
       //   console.log("simulate async data");
@@ -235,13 +301,13 @@ export default {
   height: 100%;
   width: 100%;
 }
-.main { 
+.main {
   height: 100%;
 }
-.header-spe{
-    z-index: 101;
-    position: fixed;
-    top: 0;
+.header-spe {
+  z-index: 101;
+  position: fixed;
+  top: 0;
 }
 .page-main {
   width: 1200px;
@@ -250,11 +316,11 @@ export default {
   .left-main {
     width: 870px;
     min-width: 870px;
-    float: left;   
+    float: left;
   }
   .right-main {
     width: 300px;
-    float: right;   
+    float: right;
   }
 }
 
@@ -387,7 +453,10 @@ export default {
 }
 /* 瀑布流 */
 .feed-wrapper {
-    width: 100%;
-    margin-top: 30px;
+  width: 100%;
+  margin-top: 30px;
+}
+.col-md-4{
+  display: inline-block;
 }
 </style>

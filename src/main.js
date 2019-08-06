@@ -27,6 +27,10 @@ window.Promise = require('promise')
 
 Vue.use(ElementUI)
 
+import {VueMasonryPlugin} from 'vue-masonry';
+
+Vue.use(VueMasonryPlugin)
+
 Vue.config.productionTip = false
 Object.defineProperty(Vue.prototype, '$axios', { value: fetch })
 
