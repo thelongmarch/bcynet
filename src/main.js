@@ -27,6 +27,7 @@ window.Promise = require('promise')
 
 Vue.use(ElementUI)
 
+
 import {VueMasonryPlugin} from 'vue-masonry';
 
 Vue.use(VueMasonryPlugin)
