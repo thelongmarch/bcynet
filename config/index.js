@@ -14,9 +14,10 @@ module.exports = {
     proxyTable: {
       // 反向代理中不能为空
       // target: 'http://192.168.85.73:8761/',
-      // target: 'http://192.168.85.74:19097/',     
-      '/base': {
-        target: 'http://192.168.85.73:8761',
+      // target: 'http://192.168.85.74:19097/',  
+      // http://47.99.208.154:8812/xbg/user/getPhoneCode   
+      '/xbg': {
+        target: 'http://47.99.208.154:8812',
        // target: 'http://192.168.85.74:19097/',
        // target: 'http://192.168.31.221:8083/',
        // target: 'http://192.168.31.234:8083/',

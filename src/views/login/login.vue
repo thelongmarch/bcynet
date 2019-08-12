@@ -1,42 +1,50 @@
 
 <template>
   <section class="idx-main">
-   <div class="main">
-     <!-- header -->
-     <div class="haader">
-       <Top/>
-     </div>
-     <!-- body -->
-     <div class="body-main">
-      <div class="login-main">
-           <div class="login-content">
-            <img :src="loginImg" class="logo-login" alt="爱好者社区">
-            <el-form ref="form" :model="loginObj" label-width="0px">
-              <el-form-item label>
+    <div class="main">
+      <!-- header -->
+      <div class="haader">
+        <Top />
+      </div>
+      <!-- body -->
+      <div class="body-main">
+        <div class="login-main">
+          <div class="login-content">
+            <img :src="loginImg" class="logo-login" alt="爱好者社区" />
+            <el-form ref="form" :model="loginObj" label-width="0px" :rules="rules">
+              <el-form-item label prop="phone">
                 <el-input v-model="loginObj.phone" :placeholder="loginPlace.phone"></el-input>
               </el-form-item>
-              <el-form-item label>
-                <el-input v-model="loginObj.ems" :placeholder="loginPlace.password"></el-input>
-                <input type="button" value="点击获取" class="sms-spe" v-if="loginStatus===1"/>
+              <el-form-item label prop="password">
+                <el-input v-model="loginObj.code" placeholder="短信验证码" v-if="loginStatus===1" :class="codeTip==='show'?'bor-spe':''"></el-input>
+                <span class="com-tip" v-if="codeTip==='show'">请输入验证码</span>
+                <el-input v-model="loginObj.password" placeholder="您的密码" v-if="loginStatus===2" :class="passTip==='show'?'bor-spe':''"></el-input>
+                <span class="com-tip" v-if="passTip==='show'">请输入密码</span>
+                <el-button
+                  type="primary"
+                  :disabled="btnDisable"
+                  class="sms-spe"
+                  v-if="loginStatus===1"
+                  @click="getCode"
+                >点击获取</el-button>
               </el-form-item>
             </el-form>
             <div class="login-check">
-              <span class="login-select" @click="checkLoginFun(2)" v-if="loginStatus===1">密码登录(手机号或者邮箱)</span>
+              <span
+                class="login-select"
+                @click="checkLoginFun(2)"
+                v-if="loginStatus===1"
+              >密码登录(手机号或者邮箱)</span>
               <span class="login-select" @click="checkLoginFun(1)" v-if="loginStatus===2">手机验证码登录</span>
               <span>忘记密码？</span>
             </div>
             <div class="login-footer">
-              <el-button type="primary">创建账号</el-button>
+              <el-button type="primary" @click="loginFun('form')">创建账号</el-button>
             </div>
           </div>
-
-
+        </div>
       </div>
-     </div>
-     
-   </div>
-
-   
+    </div>
   </section>
 </template>
 
@@ -46,25 +54,35 @@ import globalInterface from "@/service/interface";
 import Top from "@/components/Top";
 import loginImg from "@/assets/login-log.png";
 
-
 export default {
   components: {
     Top
   },
   data() {
     return {
-     loginObj: {
+      loginObj: {
         phone: "",
-        ems: ""
+        password: "",
+        code: ""
       },
-      loginImg:loginImg,
-      loginStatus:1,
-      loginPlace:{
-        phone:'手机号',
-        password:'短信验证码'
+      loginImg: loginImg,
+      loginStatus: 1, //1短信验证2密码
+      loginPlace: {
+        phone: "手机号",
+        password: "短信验证码"
+      },
+      btnDisable: true, //默认禁用
+      codeTip: '', //验证码提示
+      passTip: '', //密码提示
+      rules: {
+        phone: [
+          {
+            required: true,
+            message: "手机号不能为空!",
+            trigger: "change"
+          }
+        ]
       }
-
-      
     };
   },
   created() {},
@@ -82,49 +100,71 @@ export default {
       return this.$axios(globalInterface.addDict, params, "post", {
         ajaxType: "json"
       });
-    },   
+    },
     /* ***********字典项页面end******************************** */
-    checkLoginFun(key){
+    checkLoginFun(key) {
       this.loginStatus = key;
-      if(1===key){
+      if (1 === key) {
         this.loginPlace = {
-          phone:'手机号',
-          password:'短信验证码'
-        }
-      }else{
+          phone: "手机号",
+          password: "短信验证码"
+        };
+      } else {
         this.loginPlace = {
-          phone:'手机号或邮箱',
-          password:'您的密码'
-        }
+          phone: "手机号或邮箱",
+          password: "您的密码"
+        };
       }
     },
-    init() {
-     
-    }
+    /* ***********登录******************************** */
+    loginFun(formName) {
+      let _self = this;
+      if (this.loginStatus === 1) {
+        this.codeTip = !this.loginObj.code ? 'show' : 'hide';
+      }
+      if (this.loginStatus === 2) {
+        this.passTip = !this.loginObj.password ? 'show' : 'hide';
+      }
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          //验证
+          if (!!this.codeTip) {
+            return false;
+          }
+          if (!!this.passTip) {
+            return false;
+          }
+
+          _self.loginSureFun();
+        }
+      });
+    },
+    loginSureFun() {},
+    getCode() {},
+    /* ***********注册******************************** */
+    init() {}
   },
-  mounted() {
-    
-  }
+  mounted() {}
 };
 </script>
 
-<style  lang="less">
-.idx-main{
-    height: 100%;
-    width: 100%;
-     .main {
+<style scoped lang="less">
+.idx-main {
+  height: 100%;
+  width: 100%;
+  .main {
     height: 100%;
     width: 100%;
   }
-  .body-main{
+  .body-main {
     padding-top: 60px;
     height: 100%;
   }
-  .login-main{
+  .login-main {
     height: 100%;
     width: 100%;
-     background: url("../../assets/bg-login.png") repeat;
-     .login-content {
+    background: url("../../assets/bg-login.png") repeat;
+    .login-content {
       padding: 40px;
       box-sizing: border-box;
       position: absolute;
@@ -177,23 +217,33 @@ export default {
         background-color: #bdbdbd;
         color: #fff;
       }
-      .logo-login{
+      .logo-login {
         display: block;
         width: 270px;
         height: 110px;
         margin: 40px auto 40px;
       }
-      .login-check{
+      .login-check {
         display: flex;
         justify-content: space-between;
       }
-      .login-select{        
+      .login-select {
         cursor: pointer;
       }
-      .login-select:hover{
-         color: #ff6fa2;
+      .login-select:hover {
+        color: #ff6fa2;
       }
     }
   }
+  .com-tip {
+    color: #f56c6c;
+    font-size: 12px;
+    line-height: 1;
+    padding-top: 3px;
+    position: absolute;
+  }
+  .bor-spe .el-input__inner{
+      border-color: #F56C6C;
+    }
 }
 </style>

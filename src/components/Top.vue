@@ -2,13 +2,13 @@
   <div class="header-main">
     <div class="left-main">
       <img :src="log" alt class="log" @click="goWebsit" />
-      <router-link to="/" class="link-list">首页</router-link>
-      <router-link to="/" class="link-list">绘画</router-link>
-      <router-link to="/" class="link-list">写作</router-link>
-      <router-link to="/" class="link-list">COS</router-link>
-      <router-link to="/" class="link-list">问答</router-link>
-      <router-link to="/" class="link-list">视频</router-link>
-      <router-link to="/" class="link-spe">
+      <router-link to="/home" class="link-list">首页</router-link>
+      <router-link to="/home" class="link-list">绘画</router-link>
+      <router-link to="/home" class="link-list">写作</router-link>
+      <router-link to="/home" class="link-list">COS</router-link>
+      <router-link to="/home" class="link-list">问答</router-link>
+      <router-link to="/home" class="link-list">视频</router-link>
+      <router-link to="/home" class="link-spe">
         <span class="list-spe">银河英雄传说</span>
         <img :src="yinghe" alt class="yinhe-spe" @click="goWebsit" />
       </router-link>
@@ -69,7 +69,7 @@ export default {
   computed: {},
   methods: {
     goWebsit() {
-      this.$router.push("/");
+      this.$router.push("/home");
     },
     handleCurrentChange(val) {
       this.$emit("currentChange", val);

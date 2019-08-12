@@ -1,24 +1,17 @@
-const newfixURL = '/base/';
-
+const newfixURL = '/xbg/';
+ 
 const DI = {  
-  /* *********************字典管理************************************ */
-   // 获取字典管理列表
-   selectPageDictList: newfixURL + 'selectPageDictList',
-   // 新增
-   addDict: newfixURL + 'addDict',
-   // 删除
-   deleteDict: newfixURL + 'deleteDict',
-   // 编辑
-   updateDict: newfixURL + 'updateDict',
-  /* *******************字典项管理************************************** */
-  // 获取字典项目列表
-  selectDictItemList: newfixURL + 'selectDictItemList',
-  // 新增
-  addDictItem: newfixURL + 'addDictItem',
-  // 删除
-  deleteDictItem: newfixURL + 'deleteDictItem',
-  // 编辑
-  updateDictItem: newfixURL + 'updateDictItem'
+  /* *********************注册登录************************************ */
+   // 注册之后获取手机号验证码
+   getPhoneCode: newfixURL + 'user/getPhoneCode',   
+   // 登录
+   login: newfixURL + 'user/login',   
+   // 登出
+   logout: newfixURL + 'user/logout',   
+   // 注册
+   regist: newfixURL + 'user/regist',   
+   // 企业注册
+   registEnterprise: newfixURL + 'user/registEnterprise',   
   /* ********************************************************* */
 }
 
