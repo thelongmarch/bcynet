@@ -15,18 +15,31 @@
               <el-form-item label prop="phone">
                 <el-input v-model="loginObj.phone" :placeholder="loginPlace.phone"></el-input>
               </el-form-item>
-              <el-form-item label prop="password">
-                <el-input v-model="loginObj.code" placeholder="短信验证码" v-if="loginStatus===1" :class="codeTip==='show'?'bor-spe':''"></el-input>
-                <span class="com-tip" v-if="codeTip==='show'">请输入验证码</span>
-                <el-input v-model="loginObj.password" placeholder="您的密码" v-if="loginStatus===2" :class="passTip==='show'?'bor-spe':''"></el-input>
-                <span class="com-tip" v-if="passTip==='show'">请输入密码</span>
+              <el-form-item
+                label
+                prop="password"
+                v-if="loginStatus===2"
+                :rules="[{required:true,validator:validatorPass,trigger:'change'}]"
+              >
+                <el-input v-model="loginObj.password" placeholder="您的密码"></el-input>
+              </el-form-item>
+              <el-form-item
+                label
+                prop="code"
+                v-if="loginStatus===1"
+                :rules="[{required:true,validator:validatorCode,trigger:'change'}]"
+              >
+                <el-input
+                  v-model="loginObj.code"
+                  placeholder="短信验证码"
+                  ></el-input>
                 <el-button
-                  type="primary"
-                  :disabled="btnDisable"
-                  class="sms-spe"
-                  v-if="loginStatus===1"
+                  type="info"
+                  :disabled="btnDisable"  
+                  class="sms-spe"               
                   @click="getCode"
-                >点击获取</el-button>
+                  :class="!btnDisable?'sms-active':''"
+                >点击获取</el-button>               
               </el-form-item>
             </el-form>
             <div class="login-check">
@@ -39,7 +52,7 @@
               <span>忘记密码？</span>
             </div>
             <div class="login-footer">
-              <el-button type="primary" @click="loginFun('form')">创建账号</el-button>
+              <el-button type="primary" @click="loginFun('form')">登录</el-button>
             </div>
           </div>
         </div>
@@ -71,27 +84,42 @@ export default {
         phone: "手机号",
         password: "短信验证码"
       },
-      btnDisable: true, //默认禁用
-      codeTip: '', //验证码提示
-      passTip: '', //密码提示
+      btnDisable: true, //默认禁用      
       rules: {
         phone: [
           {
             required: true,
             message: "手机号不能为空!",
             trigger: "change"
+          },
+          {
+            pattern: /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/,
+            message: "请输入正确的手机号!"
           }
         ]
       }
     };
   },
+  watch: {
+    "loginObj.phone": {
+      handler(newName, oldName) {        
+        let reg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+        if(reg.test(newName)){          
+            this.btnDisable = false;
+        }else{
+            this.btnDisable = true;
+        }
+      },
+      immediate: true
+      // deep: true
+    }
+  },
   created() {},
   methods: {
-    /* *************promise****************************** */
-    /* *************字典管理****************************** */
-    // table
-    tablePromise(params) {
-      return this.$axios(globalInterface.selectPageDictList, params, "post", {
+    /* *************promise****************************** */   
+    // 获取code
+    getCodePromise(params) {
+      return this.$axios(globalInterface.getPhoneCode, params, "post", {
         ajaxType: "json"
       });
     },
@@ -101,7 +129,18 @@ export default {
         ajaxType: "json"
       });
     },
-    /* ***********字典项页面end******************************** */
+    /* ***********切换******************************** */
+    validatorCode(rule, value, callback) {
+      if (!this.loginObj.code) {
+        callback(new Error("验证码不能为空！"));
+      }
+    },
+    validatorPass(rule, value, callback) {
+      if (!this.loginObj.password) {
+        callback(new Error("密码不能为空！"));
+      }
+    },
+    /* ***********切换******************************** */
     checkLoginFun(key) {
       this.loginStatus = key;
       if (1 === key) {
@@ -118,29 +157,42 @@ export default {
     },
     /* ***********登录******************************** */
     loginFun(formName) {
-      let _self = this;
-      if (this.loginStatus === 1) {
-        this.codeTip = !this.loginObj.code ? 'show' : 'hide';
-      }
-      if (this.loginStatus === 2) {
-        this.passTip = !this.loginObj.password ? 'show' : 'hide';
-      }
+      let _self = this;    
       this.$refs[formName].validate(valid => {
         if (valid) {
-          //验证
-          if (!!this.codeTip) {
-            return false;
-          }
-          if (!!this.passTip) {
-            return false;
-          }
-
           _self.loginSureFun();
         }
       });
     },
     loginSureFun() {},
-    getCode() {},
+    async getCode() {
+      let temp = {
+        codeType: 3,
+        nationCode: "",
+        phone: this.loginObj.phone
+      }
+      let res = await this.getCodePromise(temp);
+      debugger;
+      if (res.success) {
+
+
+//         data: null
+// returnCode: "10106"
+// returnMsg: "用户账号不存在"
+// success: false
+        this.$message({
+          message: "新增成功",
+          type: "success"
+        });
+     
+      } else {
+        this.$message({
+          message: res.returnMsg,
+          type: "warning"
+        });
+      }
+
+    },
     /* ***********注册******************************** */
     init() {}
   },
@@ -210,11 +262,10 @@ export default {
         width: 72px;
         padding: 0;
         text-align: center;
-        border-radius: 4px;
-        z-index: 3;
-        cursor: text;
-        border: 1px solid #bdbdbd;
-        background-color: #bdbdbd;
+      }
+      .sms-active{
+        border: 1px solid #ff6fa2;
+        background-color: #ff6fa2;
         color: #fff;
       }
       .logo-login {
@@ -242,8 +293,6 @@ export default {
     padding-top: 3px;
     position: absolute;
   }
-  .bor-spe .el-input__inner{
-      border-color: #F56C6C;
-    }
+ 
 }
 </style>
