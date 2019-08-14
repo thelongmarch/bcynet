@@ -1,41 +1,51 @@
 <template>
   <div class="header-main">
-    <div class="left-main">
-      <img :src="log" alt class="log" @click="goWebsit" />
-      <router-link to="/home" class="link-list">首页</router-link>
-      <router-link to="/home" class="link-list">绘画</router-link>
-      <router-link to="/home" class="link-list">写作</router-link>
-      <router-link to="/home" class="link-list">COS</router-link>
-      <router-link to="/home" class="link-list">问答</router-link>
-      <router-link to="/home" class="link-list">视频</router-link>
-      <router-link to="/home" class="link-spe">
-        <span class="list-spe">银河英雄传说</span>
-        <img :src="yinghe" alt class="yinhe-spe" @click="goWebsit" />
-      </router-link>
-      <router-link to="/" class="link-list">
-        <img :src="phone" alt class="phone-spe" />
-        <span>下载APP</span>
-      </router-link>
-    </div>
-    <div class="right-main">
-      <div class="search-main">
-        <input
-          type="text"
-          name="k"
-          maxlength="40"
-          placeholder="搜索COS、绘画、文、用户..."
-          autocomplete="off"
-        />
-        <div class="search-ico"></div>
-      </div>
-      <router-link to="/login" class="link-list">登录</router-link>
-      <router-link to="/register" class="link-list">注册</router-link>
-      <router-link to="/">
-        <div class="publish-main">
-          <img :src="publish" alt class="pub-img" />
-          <span>发布</span>
+    <div class="home-header">
+      <!-- left -->
+      <div class="left-main">
+        <img :src="log" alt class="log" @click="goWebsit" />
+        <div class="search-main">
+          <input
+            type="text"
+            name="k"
+            maxlength="40"
+            placeholder="搜索COS、绘画、文、用户..."
+            autocomplete="off"
+          />
+          <div class="search-ico"></div>
         </div>
-      </router-link>
+      </div>
+      <!-- right -->
+      <div class="right-main">
+        <div class="right-content">
+          <div class="right-home">
+
+          </div>
+          <div class="right-bell">
+            
+          </div>
+          <div class="right-publish">
+            <el-popover
+              placement="top-start"             
+              width="300"
+              trigger="hover"
+             >
+               <p>这是一段内容这是一段内容确定删除吗？</p>
+ 
+              <el-button slot="reference">hover 激活</el-button>
+            </el-popover>
+          </div>
+        </div>
+       
+        <router-link to="/login" class="link-list">登录</router-link>
+        <router-link to="/register" class="link-list">注册</router-link>
+        <router-link to="/">
+          <div class="publish-main">
+            <img :src="publish" alt class="pub-img" />
+            <span>发布</span>
+          </div>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -69,7 +79,7 @@ export default {
   computed: {},
   methods: {
     goWebsit() {
-      this.$router.push("/home");
+      this.$router.push("/loginIndex");
     },
     handleCurrentChange(val) {
       this.$emit("currentChange", val);
@@ -81,6 +91,7 @@ export default {
 
 <style scoped="scoped" lang="less" >
 @import url("../styles/common.less");
+
 .search-main {
   margin-top: 6px;
   position: relative;
@@ -122,11 +133,16 @@ export default {
   background-color: white;
   font-size: 14px;
   z-index: 101;
-  position: fixed;
-  display: flex;
-  justify-content: space-between;
+  position: fixed;  
   box-sizing: border-box;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  .home-header {
+    width: 1200px;
+    margin: 0 auto;
+    border: 1px solid red;
+    display: flex;
+  justify-content: space-between;
+  }
   .left-main {
     display: flex;
     justify-content: flex-start;
@@ -140,30 +156,7 @@ export default {
       margin: 6px 25px 6px 20px;
       cursor: pointer;
     }
-    .link-list {
-      line-height: 50px;
-      padding: 0 15px;
-      color: #333;
-      .phone-spe {
-        vertical-align: middle;
-      }
-    }
-    .link-list:hover {
-      color: #ff6fa2;
-    }
-    .link-spe {
-      color: #333;
-    }
-    .link-spe:hover {
-      color: #ff6fa2;
-    }
-    .list-spe {
-      line-height: 50px;
-      vertical-align: top;
-    }
-    .yinhe-spe {
-      height: 50px;
-    }
+    
   }
   .right-main {
     display: flex;

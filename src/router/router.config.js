@@ -1,4 +1,5 @@
 const home = () => import('@/views/home/index')
+const loginIndex = () => import('@/views/home/loginIndex')
 const tree = () => import('@/views/tree')
 const login = () => import('@/views/login/login')
 const register = () => import('@/views/login/register')
@@ -33,6 +34,12 @@ const routes = [
     name: 'register',
     component: register,
     meta: {title: '注册'}
+  }, {
+    // loginIndex
+    path: '/loginIndex',
+    name: 'loginIndex',
+    component: loginIndex,
+    meta: {title: '首页'}
   }
 ]
 
