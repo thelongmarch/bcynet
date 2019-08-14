@@ -12,8 +12,11 @@
           <div class="login-content">
             <img :src="loginImg" class="logo-login" alt="爱好者社区" />
             <el-form ref="form" :model="loginObj" label-width="0px" :rules="rules">
-              <el-form-item label prop="phone">
-                <el-input v-model="loginObj.phone" :placeholder="loginPlace.phone"></el-input>
+              <el-form-item label prop="phone" v-if="loginStatus===1" :rules="[{required:true,validator:validatorPhone,trigger:'change'}]">
+                <el-input v-model="loginObj.phone" placeholder="手机号"></el-input>
+              </el-form-item>
+              <el-form-item label prop="phoneAndEmail" v-if="loginStatus===2" :rules="[{required:true,validator:validatorEmail,trigger:'change'}]">
+                <el-input v-model="loginObj.phoneAndEmail" placeholder="手机号或邮箱"></el-input>
               </el-form-item>
               <el-form-item
                 label
@@ -39,7 +42,9 @@
                   class="sms-spe"               
                   @click="getCode"
                   :class="!btnDisable?'sms-active':''"
-                >点击获取</el-button>               
+                  v-if="btnShow"
+                >点击获取</el-button>   
+                 <button class="sms-spe" v-if="!btnShow">{{secNum}}s</button>              
               </el-form-item>
             </el-form>
             <div class="login-check">
@@ -75,6 +80,7 @@ export default {
     return {
       loginObj: {
         phone: "",
+        phoneAndEmail: "",
         password: "",
         code: ""
       },
@@ -86,18 +92,20 @@ export default {
       },
       btnDisable: true, //默认禁用      
       rules: {
-        phone: [
-          {
-            required: true,
-            message: "手机号不能为空!",
-            trigger: "change"
-          },
-          {
-            pattern: /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/,
-            message: "请输入正确的手机号!"
-          }
-        ]
-      }
+        // phone: [
+        //   {
+        //     required: true,
+        //     message: "手机号不能为空!",
+        //     trigger: "change"
+        //   },
+        //   {
+        //     pattern: /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/,
+        //     message: "请输入正确的手机号!"
+        //   }
+        // ]
+      },
+      btnShow:true,//获取验证码
+      secNum:'',//秒
     };
   },
   watch: {
@@ -123,9 +131,9 @@ export default {
         ajaxType: "json"
       });
     },
-    // add
-    addPromise(params) {
-      return this.$axios(globalInterface.addDict, params, "post", {
+    // login
+    loginPromise(params) {
+      return this.$axios(globalInterface.login, params, "post", {
         ajaxType: "json"
       });
     },
@@ -140,32 +148,88 @@ export default {
         callback(new Error("密码不能为空！"));
       }
     },
+    validatorPhone(rule, value, callback) {
+      if (!this.loginObj.phone) {
+        callback(new Error("手机号不能为空！"));
+      }else{
+        let reg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+        if(!reg.test(this.loginObj.phone)){          
+            callback(new Error("请输入正确的手机号！"));
+        }
+      }
+    },
+    validatorEmail(rule, value, callback) {
+      if (!this.loginObj.phoneAndEmail) {
+        callback(new Error("手机号或者邮箱不能为空！"));
+      }
+    },
     /* ***********切换******************************** */
     checkLoginFun(key) {
-      this.loginStatus = key;
-      if (1 === key) {
-        this.loginPlace = {
-          phone: "手机号",
-          password: "短信验证码"
-        };
-      } else {
-        this.loginPlace = {
-          phone: "手机号或邮箱",
-          password: "您的密码"
-        };
-      }
+      this.loginStatus = key;      
     },
     /* ***********登录******************************** */
     loginFun(formName) {
-      let _self = this;    
+      debugger
+      let _self = this;   
+      _self.loginSureFun();
       this.$refs[formName].validate(valid => {
+        debugger
         if (valid) {
           _self.loginSureFun();
         }
       });
     },
-    loginSureFun() {},
+    async loginSureFun() {
+      
+      //loginType (integer, optional): 登录方式 1：密码登录，2，验证码登录            
+      let temp = {
+        loginType: '',
+        password: "",
+        phone: "",
+        phoneCode: ""
+      }
+      //1 手机验证码登录
+      if(this.loginStatus===1){
+        temp = {
+          loginType: 2,
+          password: "",
+          phone: this.loginObj.phone,
+          phoneCode: this.loginObj.code
+        }
+      }else{
+         temp = {
+          loginType: 1,
+          password: this.loginObj.password,
+          phone: this.loginObj.phoneAndEmail,
+          phoneCode: ""
+        }
+      }
+
+      let res = await this.loginPromise(temp);
+      debugger;
+      if (res.success) {
+        
+        this.$message({
+          message: "登录成功！",
+          type: "success"
+        });
+
+         // 路由跳转
+         let _self = this;
+         setTimeout(() => {
+           _self.$router.push({name: 'loginIndex'})
+         }, 2000);
+        
+     
+      } else {
+        this.$message({
+          message: res.returnMsg,
+          type: "warning"
+        });
+      }
+    },
     async getCode() {
+      //codeType (integer): 验证码类型：1注册 2忘记密码 3登录校验手机号 4修改登录密码 5修改手机号 ,
       let temp = {
         codeType: 3,
         nationCode: "",
@@ -174,14 +238,18 @@ export default {
       let res = await this.getCodePromise(temp);
       debugger;
       if (res.success) {
+        this.btnShow = false;
+        this.secNum = 60;
+        let tempInter = setInterval(()=>{
+          this.secNum--;
+          if(this.secNum<1){
+            this.btnShow = true;
+            tempInter = '';
+          }
 
-
-//         data: null
-// returnCode: "10106"
-// returnMsg: "用户账号不存在"
-// success: false
+        },1000)
         this.$message({
-          message: "新增成功",
+          message: "验证码已发送！",
           type: "success"
         });
      

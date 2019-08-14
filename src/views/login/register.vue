@@ -30,7 +30,7 @@
               </el-form-item>
             </el-form>
             <div class="reg-read">
-              <input type="checkbox" name id />
+              <input type="checkbox" checked disabled />
               <span>我已经阅读并同意《隐私政策》</span>
             </div>
             <div class="reg-footer">
@@ -115,6 +115,7 @@ export default {
     },
     /* ***********获取code******************************** */
     async getCode() {
+       //codeType (integer): 验证码类型：1注册 2忘记密码 3登录校验手机号 4修改登录密码 5修改手机号 ,
       let temp = {
         codeType: 1,
         nationCode: "",
@@ -132,7 +133,11 @@ export default {
             tempInter = '';
           }
 
-        },1000)
+        },1000);
+         this.$message({
+          message: "验证码已发送！",
+          type: "success"
+        });
      
       } else {
         this.$message({
@@ -160,12 +165,22 @@ export default {
           message: res.returnMsg,
           type: "success"
         });
+
+         // 路由跳转
+         let _self = this;
+         setTimeout(() => {
+           _self.$router.push({name: 'login'})
+         }, 2000);
+        
      
       } else {
+       
         this.$message({
           message: res.returnMsg,
           type: "warning"
         });
+         
+        
       }
 
     },
