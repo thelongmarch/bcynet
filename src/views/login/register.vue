@@ -18,15 +18,24 @@
               </el-form-item>
               <el-form-item label prop="code">
                 <el-input v-model="regObj.code" placeholder="短信验证码"></el-input>
-                 <el-button
+                <el-button
                   type="info"
-                  :disabled="btnDisable"  
-                  class="sms-spe"               
+                  :disabled="btnDisable"
+                  class="sms-spe"
                   @click="getCode"
                   :class="!btnDisable?'sms-active':''"
                   v-if="btnShow"
-                >点击获取</el-button>  
-                 <button class="sms-spe" v-if="!btnShow">{{secNum}}s</button>  
+                >点击获取</el-button>
+                <div class="second-spe" v-if="!btnShow">{{secNum}}s</div>
+              </el-form-item>
+              <el-form-item label prop="email">
+                <el-input v-model="regObj.email" placeholder="邮箱"></el-input>
+              </el-form-item>
+              <el-form-item label prop="password1">
+                <el-input v-model="regObj.password1" placeholder="密码" show-password></el-input>
+              </el-form-item>
+              <el-form-item label prop="password2">
+                <el-input v-model="regObj.password2" placeholder="确认密码" show-password></el-input>
               </el-form-item>
             </el-form>
             <div class="reg-read">
@@ -34,10 +43,9 @@
               <span>我已经阅读并同意《隐私政策》</span>
             </div>
             <div class="reg-footer">
-              <el-button type="primary" @click="create">创建账号</el-button>
+              <el-button type="primary" @click="registFun('form')">创建账号</el-button>
             </div>
           </div>
-          
         </div>
       </div>
     </div>
@@ -57,9 +65,12 @@ export default {
     return {
       regObj: {
         phone: "",
+        email: "",
+        password1: "",
+        password2: "",
         code: ""
       },
-      btnDisable: true, //默认禁用      
+      btnDisable: true, //默认禁用
       rules: {
         phone: [
           {
@@ -72,26 +83,51 @@ export default {
             message: "请输入正确的手机号!"
           }
         ],
-        code:[
+        code: [
           {
             required: true,
             message: "验证码不能为空!",
             trigger: "change"
-          }         
+          }
+        ],
+        email: [
+          {
+            required: true,
+            message: "邮箱不能为空!",
+            trigger: "change"
+          },
+          {
+            pattern: /^([A-Za-z0-9_\-\.\u4e00-\u9fa5])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,8})$/,
+            message: "请输入正确的邮箱!"
+          }
+        ],
+        password1: [
+          {
+            required: true,
+            message: "密码不能为空!",
+            trigger: "change"
+          }
+        ],
+        password2: [
+          {
+            required: true,
+            message: "密码不能为空!",
+            trigger: "change"
+          }
         ]
       },
-      btnShow:true,//获取验证码
-      secNum:'',//秒
+      btnShow: true, //获取验证码
+      secNum: "" //秒
     };
   },
-   watch: {
+  watch: {
     "regObj.phone": {
-      handler(newName, oldName) {        
+      handler(newName, oldName) {
         let reg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
-        if(reg.test(newName)){          
-            this.btnDisable = false;
-        }else{
-            this.btnDisable = true;
+        if (reg.test(newName)) {
+          this.btnDisable = false;
+        } else {
+          this.btnDisable = true;
         }
       },
       immediate: true
@@ -100,7 +136,7 @@ export default {
   },
   created() {},
   methods: {
-    /* *************promise****************************** */    
+    /* *************promise****************************** */
     // 获取code
     getCodePromise(params) {
       return this.$axios(globalInterface.getPhoneCode, params, "post", {
@@ -115,76 +151,82 @@ export default {
     },
     /* ***********获取code******************************** */
     async getCode() {
-       //codeType (integer): 验证码类型：1注册 2忘记密码 3登录校验手机号 4修改登录密码 5修改手机号 ,
+      //codeType (integer): 验证码类型：1注册 2忘记密码 3登录校验手机号 4修改登录密码 5修改手机号 ,
       let temp = {
         codeType: 1,
         nationCode: "",
         phone: this.regObj.phone
-      }
+      };
       let res = await this.getCodePromise(temp);
       debugger;
       if (res.success) {
         this.btnShow = false;
         this.secNum = 60;
-        let tempInter = setInterval(()=>{
+        let tempInter = setInterval(() => {
           this.secNum--;
-          if(this.secNum<1){
+          if (this.secNum < 1) {
             this.btnShow = true;
-            tempInter = '';
+            tempInter = "";
           }
-
-        },1000);
-         this.$message({
+        }, 1000);
+        this.$message({
           message: "验证码已发送！",
           type: "success"
         });
-     
       } else {
         this.$message({
           message: res.returnMsg,
           type: "warning"
         });
       }
-
     },
-    async create() {
-      let temp = {      
+    /* ****************注册*************************************** */
+    registFun(formName) {
+      let _self = this;
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (_self.regObj.password1 === _self.regObj.password2) {
+            _self.registSureFun();
+          } else {
+            this.$message({
+              message: "请确认两次输入的密码一致！",
+              type: "warning"
+            });
+          }
+        }
+      });
+    },
+    async registSureFun() {
+      let temp = {
         avatar: "",
-        email: "",
-        loginPwd: "",
+        email: this.regObj.email,
+        loginPwd: this.regObj.password1,
         phone: this.regObj.phone,
         phoneCode: this.regObj.code,
         realName: "",
         sex: 0,
         username: ""
-      }  
+      };
       let res = await this.registPromise(temp);
-      debugger;
-      if (res.success) {        
+      if (res.success) {
         this.$message({
           message: res.returnMsg,
           type: "success"
         });
 
-         // 路由跳转
-         let _self = this;
-         setTimeout(() => {
-           _self.$router.push({name: 'login'})
-         }, 2000);
-        
-     
+        // 路由跳转
+        let _self = this;
+        setTimeout(() => {
+          _self.$router.push({ name: "login" });
+        }, 2000);
       } else {
-       
         this.$message({
           message: res.returnMsg,
           type: "warning"
         });
-         
-        
       }
-
     },
-
+    /* ******************init********************************** */
     init() {}
   },
   mounted() {}
@@ -251,9 +293,24 @@ export default {
         right: 7px;
         height: 30px;
         width: 72px;
-        padding: 0;       
+        padding: 0;
       }
-       .sms-active{
+      .second-spe {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        height: 30px;
+        width: 72px;
+        padding: 0;
+        text-align: center;
+        line-height: 30px;
+        cursor: text;
+        border: 1px solid #bdbdbd;
+        background-color: #bdbdbd;
+        color: #fff;
+        border-radius: 4px;
+      }
+      .sms-active {
         border: 1px solid #ff6fa2;
         background-color: #ff6fa2;
         color: #fff;

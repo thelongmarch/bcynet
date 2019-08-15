@@ -11,26 +11,14 @@
         <div class="login-main">
           <div class="login-content">
             <img :src="loginImg" class="logo-login" alt="爱好者社区" />
-            <el-form ref="form" :model="loginObj" label-width="0px" :rules="rules">
-              <el-form-item label prop="phone" v-if="loginStatus===1" :rules="[{required:true,validator:validatorPhone,trigger:'change'}]">
+            <div  v-show="loginStatus===1">
+                <el-form ref="loginSms" :model="loginObj" label-width="0px" :rules="rules">
+              <el-form-item label prop="phone">
                 <el-input v-model="loginObj.phone" placeholder="手机号"></el-input>
-              </el-form-item>
-              <el-form-item label prop="phoneAndEmail" v-if="loginStatus===2" :rules="[{required:true,validator:validatorEmail,trigger:'change'}]">
-                <el-input v-model="loginObj.phoneAndEmail" placeholder="手机号或邮箱"></el-input>
-              </el-form-item>
+              </el-form-item> 
               <el-form-item
                 label
-                prop="password"
-                v-if="loginStatus===2"
-                :rules="[{required:true,validator:validatorPass,trigger:'change'}]"
-              >
-                <el-input v-model="loginObj.password" placeholder="您的密码"></el-input>
-              </el-form-item>
-              <el-form-item
-                label
-                prop="code"
-                v-if="loginStatus===1"
-                :rules="[{required:true,validator:validatorCode,trigger:'change'}]"
+                prop="code"   
               >
                 <el-input
                   v-model="loginObj.code"
@@ -44,20 +32,31 @@
                   :class="!btnDisable?'sms-active':''"
                   v-if="btnShow"
                 >点击获取</el-button>   
-                 <button class="sms-spe" v-if="!btnShow">{{secNum}}s</button>              
+                 <div class="second-spe" v-if="!btnShow">{{secNum}}s</div>              
               </el-form-item>
             </el-form>
+            </div>
+
+            <div  v-show="loginStatus===2">
+                <el-form ref="loginPass" :model="loginObj" label-width="0px" :rules="rulesPassword">
+              <el-form-item label prop="phone">
+                <el-input v-model="loginObj.phone" placeholder="手机号"></el-input>
+              </el-form-item>            
+              <el-form-item
+                label
+                prop="password"   
+              >
+                <el-input v-model="loginObj.password" placeholder="您的密码"></el-input>
+              </el-form-item>            
+            </el-form>
+            </div>          
             <div class="login-check">
-              <span
-                class="login-select"
-                @click="checkLoginFun(2)"
-                v-if="loginStatus===1"
-              >密码登录(手机号或者邮箱)</span>
+              <span  class="login-select"  @click="checkLoginFun(2)" v-if="loginStatus===1">密码登录</span>
               <span class="login-select" @click="checkLoginFun(1)" v-if="loginStatus===2">手机验证码登录</span>
-              <span>忘记密码？</span>
+              <!-- <span @click="forgetPs">忘记密码？</span> -->
             </div>
             <div class="login-footer">
-              <el-button type="primary" @click="loginFun('form')">登录</el-button>
+              <el-button type="primary" @click="loginFun">登录</el-button>
             </div>
           </div>
         </div>
@@ -79,8 +78,7 @@ export default {
   data() {
     return {
       loginObj: {
-        phone: "",
-        phoneAndEmail: "",
+        phone: "",        
         password: "",
         code: ""
       },
@@ -92,17 +90,46 @@ export default {
       },
       btnDisable: true, //默认禁用      
       rules: {
-        // phone: [
-        //   {
-        //     required: true,
-        //     message: "手机号不能为空!",
-        //     trigger: "change"
-        //   },
-        //   {
-        //     pattern: /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/,
-        //     message: "请输入正确的手机号!"
-        //   }
-        // ]
+        phone: [
+          {
+            required: true,
+            message: "手机号不能为空!",
+            trigger: "change"
+          },
+          {
+            pattern: /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/,
+            message: "请输入正确的手机号!"
+          }
+        ],
+        code: [
+          {
+            required: true,
+            message: "验证码不能为空！",
+            trigger: "change"
+          }         
+        ],
+
+      },
+      rulesPassword: {
+        phone: [
+          {
+            required: true,
+            message: "手机号不能为空!",
+            trigger: "change"
+          },
+          {
+            pattern: /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/,
+            message: "请输入正确的手机号!"
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: "密码不能为空！",
+            trigger: "change"
+          }         
+        ],
+
       },
       btnShow:true,//获取验证码
       secNum:'',//秒
@@ -136,51 +163,29 @@ export default {
       return this.$axios(globalInterface.login, params, "post", {
         ajaxType: "json"
       });
-    },
-    /* ***********切换******************************** */
-    validatorCode(rule, value, callback) {
-      if (!this.loginObj.code) {
-        callback(new Error("验证码不能为空！"));
-      }
-    },
-    validatorPass(rule, value, callback) {
-      if (!this.loginObj.password) {
-        callback(new Error("密码不能为空！"));
-      }
-    },
-    validatorPhone(rule, value, callback) {
-      if (!this.loginObj.phone) {
-        callback(new Error("手机号不能为空！"));
-      }else{
-        let reg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
-        if(!reg.test(this.loginObj.phone)){          
-            callback(new Error("请输入正确的手机号！"));
-        }
-      }
-    },
-    validatorEmail(rule, value, callback) {
-      if (!this.loginObj.phoneAndEmail) {
-        callback(new Error("手机号或者邮箱不能为空！"));
-      }
-    },
+    },       
     /* ***********切换******************************** */
     checkLoginFun(key) {
       this.loginStatus = key;      
     },
+    forgetPs(){
+       this.$message({
+          message: '暂未开放',
+          type: "warning"
+        });
+    },
     /* ***********登录******************************** */
-    loginFun(formName) {
-      debugger
-      let _self = this;   
-      _self.loginSureFun();
-      this.$refs[formName].validate(valid => {
-        debugger
+    loginFun() {
+
+      let formName = this.loginStatus===1?'loginSms':'loginPass';      
+      let _self = this;
+      this.$refs[formName].validate(valid => {        
         if (valid) {
           _self.loginSureFun();
         }
       });
     },
-    async loginSureFun() {
-      
+    async loginSureFun() {      
       //loginType (integer, optional): 登录方式 1：密码登录，2，验证码登录            
       let temp = {
         loginType: '',
@@ -200,7 +205,7 @@ export default {
          temp = {
           loginType: 1,
           password: this.loginObj.password,
-          phone: this.loginObj.phoneAndEmail,
+          phone: this.loginObj.phone,
           phoneCode: ""
         }
       }
@@ -208,7 +213,6 @@ export default {
       let res = await this.loginPromise(temp);
       debugger;
       if (res.success) {
-        
         this.$message({
           message: "登录成功！",
           type: "success"
@@ -228,6 +232,7 @@ export default {
         });
       }
     },
+    /* ***********获取验登录证码**************************** */
     async getCode() {
       //codeType (integer): 验证码类型：1注册 2忘记密码 3登录校验手机号 4修改登录密码 5修改手机号 ,
       let temp = {
@@ -261,7 +266,7 @@ export default {
       }
 
     },
-    /* ***********注册******************************** */
+    /* ***********init******************************** */
     init() {}
   },
   mounted() {}
@@ -330,6 +335,21 @@ export default {
         width: 72px;
         padding: 0;
         text-align: center;
+      }
+      .second-spe {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        height: 30px;
+        width: 72px;
+        padding: 0;
+        text-align: center;
+        line-height: 30px;
+        cursor: text;
+        border: 1px solid #bdbdbd;
+        background-color: #bdbdbd;
+        color: #fff;
+        border-radius: 4px;
       }
       .sms-active{
         border: 1px solid #ff6fa2;
