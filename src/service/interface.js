@@ -12,6 +12,13 @@ const DI = {
    regist: newfixURL + 'user/regist',   
    // 企业注册
    registEnterprise: newfixURL + 'user/registEnterprise',   
+  /* *********************img************************************ */
+  // 图片大厅展示图片
+  showAllImg: newfixURL + 'img/showAllImg',   
+  // 图片大厅展示我的图片
+  showMyImg: newfixURL + 'img/showMyImg',   
+  // 发布图片
+  publishImg: newfixURL + 'img/publishImg',   
   /* ********************************************************* */
 }
 

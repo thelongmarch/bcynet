@@ -30,7 +30,7 @@
                 :horizontal-order="false"
               >
                 <div class="row">
-                  <div v-masonry-tile class="col-md-4" v-for="(post, index) in posts">
+                  <div v-masonry-tile class="col-md-4" v-for="(post, index) in allImgs">
                     <div class="card m-4" style="width: 18rem;">
                       <img
                         class="card-img-top"
@@ -190,12 +190,17 @@ export default {
         password: "短信验证码"
       },
       download: download, //下载图片
-      posts: []
+      allImgs: [],
+      pageMsg: {
+        currentPage: 1,
+        total: 0,
+        pageSize: 10
+      },
     };
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
-    this.getPosts();
+    this.getAllImg();
   },
   //定义这个sweiper对象
   computed: {
@@ -204,21 +209,14 @@ export default {
     }
   },
   methods: {
-    /* *************promise****************************** */
-    /* *************字典管理****************************** */
-    // table
-    tablePromise(params) {
-      return this.$axios(globalInterface.selectPageDictList, params, "post", {
+    /* *************promise****************************** */   
+    // 全部图片
+    showAllPromise(params) {
+      return this.$axios(globalInterface.showAllImg, params, "post", {
         ajaxType: "json"
       });
-    },
-    // add
-    addPromise(params) {
-      return this.$axios(globalInterface.addDict, params, "post", {
-        ajaxType: "json"
-      });
-    },
-    /* ***********字典项页面end******************************** */
+    },   
+    /* ***********check******************************** */
     checkLoginFun(key) {
       this.loginStatus = key;
       if (1 === key) {
@@ -244,13 +242,33 @@ export default {
       }
       return pwd;
     },
-    getPosts() {
-      for (var i = 0; i < 16; i++) {
-        this.posts.push({
-          title: this.randomString(30),
-          content: this.randomString(100)
+    async getAllImg() {
+      let temp = {
+        category: "",
+        pageNum: this.pageMsg.currentPage,
+        pageSize: this.pageMsg.pageSize,
+        picDesc: "",
+        title: ""
+      }
+      let res = await this.showAllPromise(temp);
+      debugger
+      if (res.success) {
+       let data = res.data;
+       this.allImgs = this.allImgs.concat(data)
+     
+      } else {
+        this.$message({
+          message: res.returnMsg,
+          type: "warning"
         });
       }
+
+      // for (var i = 0; i < 16; i++) {
+      //   this.posts.push({
+      //     title: this.randomString(30),
+      //     content: this.randomString(100)
+      //   });
+      // }
     },
     handleScroll() {
       let scrollHeight = window.scrollY;
