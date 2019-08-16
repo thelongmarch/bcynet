@@ -19,32 +19,39 @@
       <div class="right-main">
         <div class="right-content">
           <div class="right-home">
-
+            <!-- <img :src="home" alt="" width="24px">  -->
+            <span class="home-img"></span>
+            <span class="home-title">首页</span>
           </div>
           <div class="right-bell">
-            
+            <!-- <img :src="bell" alt width="24px" /> -->
+            <span class="bell-img"></span>
+            <span class="bell-title">消息</span>
+          </div>
+          <div class="head-img">
+            <img :src="header" alt class="header-trans" width="34px" />
+            <div class="header-list">
+              退出
+            </div>
           </div>
           <div class="right-publish">
-            <el-popover
-              placement="top-start"             
-              width="300"
-              trigger="hover"
-             >
-               <p>这是一段内容这是一段内容确定删除吗？</p>
- 
-              <el-button slot="reference">hover 激活</el-button>
+            <el-popover placement="top-start" width="300" trigger="hover">
+              <div class="list-main">
+                <div class="list-com">
+                  <img src alt />
+                </div>
+                <div class="list-com"></div>
+                <div class="list-com"></div>
+              </div>
+
+              <div class="publish-m" slot="reference">
+                <el-button type="danger" class="danger-spe">
+                  <img :src="edit" alt width="24px" />发布
+                </el-button>
+              </div>
             </el-popover>
           </div>
         </div>
-       
-        <router-link to="/login" class="link-list">登录</router-link>
-        <router-link to="/register" class="link-list">注册</router-link>
-        <router-link to="/">
-          <div class="publish-main">
-            <img :src="publish" alt class="pub-img" />
-            <span>发布</span>
-          </div>
-        </router-link>
       </div>
     </div>
   </div>
@@ -55,6 +62,10 @@ import log from "@/assets/log.png";
 import logoheader from "@/assets/logo-header.png";
 import phone from "@/assets/phone.png";
 import publish from "@/assets/publish.png";
+import home from "@/assets/home.png";
+import bell from "@/assets/bell.png";
+import edit from "@/assets/edit.png";
+import header from "@/assets/header.png";
 
 export default {
   data() {
@@ -62,7 +73,11 @@ export default {
       log: log,
       yinghe: logoheader,
       phone: phone,
-      publish: publish
+      publish: publish,
+      home: home,
+      bell: bell,
+      edit: edit,
+      header: header
     };
   },
   props: {
@@ -133,7 +148,7 @@ export default {
   background-color: white;
   font-size: 14px;
   z-index: 101;
-  position: fixed;  
+  position: fixed;
   box-sizing: border-box;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
   .home-header {
@@ -141,7 +156,8 @@ export default {
     margin: 0 auto;
     border: 1px solid red;
     display: flex;
-  justify-content: space-between;
+    justify-content: space-between;
+    height: 50px;
   }
   .left-main {
     display: flex;
@@ -156,43 +172,109 @@ export default {
       margin: 6px 25px 6px 20px;
       cursor: pointer;
     }
-    
   }
   .right-main {
     display: flex;
     justify-content: flex-start;
     line-height: 50px;
-    .link-list {
-      line-height: 50px;
-      padding: 0 15px;
-      color: #333;
-      .phone-spe {
-        vertical-align: middle;
+    .right-content {
+      display: flex;
+      flex-direction: row;
+      flex-flow: nowrap;
+      .right-home {
+        width: 80px;
+        .home-img {
+          width: 24px;
+          display: inline-block;
+          height: 24px;
+          background-image: url("../assets/home.png");
+          background-repeat: no-repeat;
+          background-size: cover;
+          margin-top: 11px;
+          color: #999;
+          cursor:pointer;
+        }
+        .home-title {
+          display: inline-block;
+          vertical-align: top;
+          color: #999;
+          font-size: 16px;
+          font-weight: 500;
+          cursor:pointer;
+        }
+        .home-title:hover {        
+          color: #666;
+        }
       }
-    }
-    .link-list:hover {
-      color: #ff6fa2;
-    }
-    .publish-main {
-      display: block;
-      width: 113px;
-      height: 50px;
-      border-radius: 0;
-      text-align: center;
-      cursor: pointer;
-      line-height: 50px;
-      box-sizing: border-box;
-      border: none;
-      background-color: #ff6fa2;
-      color: #fff;
-      font-size: 16px;
-      line-height: 50px;
-      .pub-img {
-        vertical-align: middle;
+      .right-bell {
+        width: 80px;
+         .bell-img {
+          width: 24px;
+          display: inline-block;
+          height: 24px;
+          background-image: url("../assets/bell.png");
+          background-repeat: no-repeat;
+          background-size: cover;
+          margin-top: 11px;
+          color: #999;
+          cursor:pointer;
+        }
+        .bell-title {
+          display: inline-block;
+          vertical-align: top;
+          color: #999;
+          font-size: 16px;
+          font-weight: 500;
+          cursor:pointer;
+        }
+        .bell-title:hover {        
+          color: #666;
+        }
       }
-    }
-    .publish-main:hover {
-      background-color: #ff4081;
+      .head-img {
+        width: 37px;
+        position: relative;
+        cursor: pointer;
+        .header-trans{
+          border-radius: 50%;
+          margin-top: 8px;
+          cursor: pointer;
+        }
+        .header-trans:hover{
+          //  transform: scale(1.5);
+          // transform:translate(55px);
+          // animation:header-animation 2s ease-out;
+        }
+        @keyframes header-animation{
+          0%{transform:translate(0);opacity:0;}
+          50%{transform:translate(30px);opacity:1;}
+          70%{transform:translate(35px);opacity:1;}
+          100%{transform:translate(60px);opacity:0;}
+        }
+        .header-list{
+         
+          position: absolute;
+          overflow: hidden;
+          height: 0;
+          top: 50px;
+          left: -114px;
+          width: 260px;
+          background-color: #fff;
+          transition-property: height;
+          transition-duration: .3s;
+        }       
+      
+        // .header-list:hover{
+        //   display: block;
+        // }
+
+      }
+      // head hover
+      .head-img:hover .header-list{
+          display: block;
+          height: 265px;
+      }
+
     }
   }
 }
