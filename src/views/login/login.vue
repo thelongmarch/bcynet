@@ -70,6 +70,8 @@ import globalFun from "@/common/common";
 import globalInterface from "@/service/interface";
 import Top from "@/components/Top";
 import loginImg from "@/assets/login-log.png";
+import store from '../../store'
+import $axios from 'axios'
 
 export default {
   components: {
@@ -217,7 +219,14 @@ export default {
           message: "登录成功！",
           type: "success"
         });
-
+        let data = res.data;
+        if(data){
+          this.$store.commit('set_token', {Authorization: data.token});      
+          // 将token存储到本地
+          localStorage.setItem('Authorization', data.token);
+          localStorage.setItem('phone', data.phone);
+        }
+      
          // 路由跳转
          let _self = this;
          setTimeout(() => {

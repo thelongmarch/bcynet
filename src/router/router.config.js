@@ -1,5 +1,6 @@
 const home = () => import('@/views/home/index')
 const loginIndex = () => import('@/views/home/loginIndex')
+const publish = () => import('@/views/home/publish')
 const tree = () => import('@/views/tree')
 const login = () => import('@/views/login/login')
 const register = () => import('@/views/login/register')
@@ -38,8 +39,14 @@ const routes = [
     // loginIndex
     path: '/loginIndex',
     name: 'loginIndex',
-    component: loginIndex,
+    component: loginIndex,   
     meta: {title: '首页'}
+  }, {
+    // publish
+    path: '/publish',
+    name: 'publish',
+    component: publish,   
+    meta: {title: '发布'}
   }
 ]
 

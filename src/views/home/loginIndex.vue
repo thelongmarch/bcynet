@@ -190,10 +190,10 @@ export default {
         password: "短信验证码"
       },
       download: download, //下载图片
-      posts: []
+      posts: []     
     };
   },
-  created() {
+  created() {    
     window.addEventListener("scroll", this.handleScroll);
     this.getPosts();
   },

@@ -1,12 +1,5 @@
 export default{
-  increment (state, params) {
-    // window.console.log(params)
-    state.count += params
-  },
-  decrement (state) {
-    state.count--
-  },
-  // 保存token
+    // 保存token
   set_token (state, Authorization) {
     // console.log('object :', Authorization.Authorization)
     state.Authorization = Authorization.Authorization
