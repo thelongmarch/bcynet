@@ -28,8 +28,8 @@
                     ref="sbUpload"
                     action="/xbg/common/upload"
                     :headers="headers"
-                    :data="{}"
-                    name="imageData"
+                    :data="{picNum:1}"
+                    name="file"
                     :before-upload="tipBeforeShareUpload"
                     :show-file-list="false"
                     :on-success="tipHandleRedChild"
@@ -144,16 +144,16 @@ export default {
       });
       return promise;
     },
-    tipHandleRedChild(response, file, fileList) {
-      debugger;
-      //分享图标上传返回结果
-      // if (response.success) {
-      //   this.shareObj.electricApp.sharedPiceUrl = response.data.imageUrl;
-      // } else {
-      //   this.$message.error(response.errorMsg ? response.errorMsg : '系统异常');
-      // }
+    tipHandleRedChild(response, file, fileList) {     
+      if(response.success){
+        this.oneRuleForm.imgUrl = response.data;
+      }else{
+         this.$message({
+          message: response.returnMsg,
+          type: "warning"
+        });
+      }
     },
-
     /* ***********发布******************************** */
     publishFun(formName) {
       let _self = this;
@@ -163,35 +163,31 @@ export default {
             }
           });
     },
-    async publishSureFun() {
-      
-      let temp = {
-        imageList:[
+    async publishSureFun() {      
+      let temp =[
           {
             category:'',
-            imgUrl:'https://www.baidu.com/img/bd_logo1.png',
-            picDesc:'图片描述',
-            title:'图片标题'
+            imgUrl:this.oneRuleForm.imgUrl,
+            picDesc:this.oneRuleForm.picDesc,
+            title:this.oneRuleForm.title
 
           }
-        ]
-      }      
+        ];
       let baseUrl = process.env.NODE_ENV === 'production' ? productionUrl : '';      
       let asyncBody = await $axios({
           method: 'post',
           baseURL: baseUrl + '/',
           url: globalInterface.publishImg,
-          headers: {'auth-token': localStorage.getItem("Authorization"),'Content-Type': 'application/x-www-form-urlencoded'},
-          params: temp
+          headers: {'auth-token': localStorage.getItem("Authorization")},
+          data: temp
         })
-      let res = asyncBody.status;    
-      debugger  
-      if (res === 200) {
+      let res = asyncBody.data;   
+      if (res.success) {
         this.$message({
-          message: "退出成功！",
+          message: "发布成功！",
           type: "success"
         });
-        this.$router.push("/home");
+        this.$router.push("/loginIndex");
        
 
       } else {

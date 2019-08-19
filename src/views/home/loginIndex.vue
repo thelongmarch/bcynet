@@ -25,25 +25,25 @@
               <div
                 v-masonry
                 transition-duration="0.3s"
-                item-selector=".item"
+                item-selector=".card-main"
                 :origin-top="true"
                 :horizontal-order="false"
               >
-                <div class="row">
-                  <div v-masonry-tile class="col-md-4" v-for="(post, index) in posts">
-                    <div class="card-main">
+                <!-- <div class="row">
+                  <div v-masonry-tile class="col-md-4" v-for="(itemObj, index) in allImgs"> -->
+                    <div  v-masonry-tile class="card-main" v-for="(itemObj, index) in allImgs">
                       <div class="pubu-main">
                         <div class="title">
                           <img class="title_img_box" :src="headImg" alt />
                           <span class="title-txt">百合と绯桜</span>
                         </div>
                         <div class="desc">
-                          <span>{{ post.title }}</span>
+                          <span>{{ itemObj.title }}</span>
                         </div>
                         <div class="pubu-img">
                           <img
                             class="card-img-top"
-                            src=" https://p9-bcy.byteimg.com/img/banciyuan/user/104544643606/item/c0r3g/wzof9eqlkwbmdoxeofhtl2pqyc7mvuwx.jpg~tplv-banciyuan-w650.image"
+                            :src="itemObj.imgUrl"
                             alt="Card image cap"
                             width="100%"
                           />
@@ -58,8 +58,9 @@
                         <p class="card-text">{{ smartTrim(post.content, 100) }}</p>
                       </div>-->
                     </div>
-                  </div>
-                </div>
+
+                  <!-- </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -206,12 +207,17 @@ export default {
         password: "短信验证码"
       },
       download: download, //下载图片
-      posts: []
+      allImgs: [],
+      pageMsg: {
+        currentPage: 1,
+        total: 0,
+        pageSize: 10
+      },
     };
   },
   created() {
     window.addEventListener("scroll", this.handleScroll);
-    this.getPosts();
+    this.getAllImg();
   },
   //定义这个sweiper对象
   computed: {
@@ -234,6 +240,12 @@ export default {
         ajaxType: "json"
       });
     },
+    // 全部图片
+    showAllPromise(params) {
+      return this.$axios(globalInterface.showAllImg, params, "post", {
+        ajaxType: "json"
+      });
+    },   
     /* ***********字典项页面end******************************** */
     checkLoginFun(key) {
       this.loginStatus = key;
@@ -268,14 +280,50 @@ export default {
         });
       }
     },
+     async getAllImg() {
+      let temp = {
+        category: "",
+        pageNum: this.pageMsg.currentPage,
+        pageSize: this.pageMsg.pageSize,
+        picDesc: "",
+        title: ""
+      }
+      let res = await this.showAllPromise(temp);
+      debugger
+      if (res.success) {
+       let data = res.data;
+       if(data.list.length>0){
+         this.allImgs = this.allImgs.concat(data.list);
+         this.pageMsg.total = data.total;
+       }
+       
+     
+      } else {
+        this.$message({
+          message: res.returnMsg,
+          type: "warning"
+        });
+      }
+
+      // for (var i = 0; i < 16; i++) {
+      //   this.posts.push({
+      //     title: this.randomString(30),
+      //     content: this.randomString(100)
+      //   });
+      // }
+    },
     handleScroll() {
       let scrollHeight = window.scrollY;
       let maxHeight =
         window.document.body.scrollHeight -
         window.document.documentElement.clientHeight;
 
-      if (scrollHeight >= maxHeight - 200) {
-        this.getPosts();
+      if (scrollHeight >= maxHeight - 50) {
+        if(this.allImgs.length<this.pageMsg.total){
+           this.pageMsg.currentPage++;
+            this.getAllImg();
+        }
+       
       }
     },
     smartTrim(string, maxLength) {

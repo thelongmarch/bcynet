@@ -30,7 +30,7 @@
                 :horizontal-order="false"
               >
                 <div class="row">
-                   <div v-masonry-tile class="col-md-4" v-for="(post, index) in allImgs">
+                   <div v-masonry-tile class="col-md-4" v-for="(itemObj, index) in allImgs">
                     <div class="card-main">
                       <div class="pubu-main">
                         <div class="title">
@@ -38,12 +38,12 @@
                           <span class="title-txt">百合と绯桜</span>
                         </div>
                         <div class="desc">
-                          <span>{{ post.title }}</span>
+                          <span>{{ itemObj.title}}</span>
                         </div>
                         <div class="pubu-img">
                           <img
                             class="card-img-top"
-                            src=" https://p9-bcy.byteimg.com/img/banciyuan/user/104544643606/item/c0r3g/wzof9eqlkwbmdoxeofhtl2pqyc7mvuwx.jpg~tplv-banciyuan-w650.image"
+                            :src="itemObj.imgUrl"
                             alt="Card image cap"
                             width="100%"
                           />
@@ -258,7 +258,7 @@ export default {
       }
       return pwd;
     },  
-    getAllImg() {
+    getAllImg1() {
       for (var i = 0; i < 16; i++) {
         this.allImgs.push({
           title: this.randomString(30),
@@ -266,7 +266,7 @@ export default {
         });
       }
     },
-    async getAllImg1() {
+    async getAllImg() {
       let temp = {
         category: "",
         pageNum: this.pageMsg.currentPage,
@@ -278,7 +278,10 @@ export default {
       debugger
       if (res.success) {
        let data = res.data;
-       this.allImgs = this.allImgs.concat(data)
+       if(data.list.length>0){
+         this.allImgs = this.allImgs.concat(data.list)
+       }
+       
      
       } else {
         this.$message({
@@ -301,6 +304,7 @@ export default {
         window.document.documentElement.clientHeight;
 
       if (scrollHeight >= maxHeight - 200) {
+        this.pageMsg.currentPage++;
         this.getAllImg();
       }
     },

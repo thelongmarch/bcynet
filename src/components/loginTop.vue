@@ -173,10 +173,10 @@ export default {
           baseURL: baseUrl + '/',
           url: globalInterface.logout,
           headers: {'auth-token': _self.token},
-          params: temp
+          data: temp
         })
-      let res = asyncBody.status;      
-      if (res === 200) {
+      let res = asyncBody.data;   
+      if (res.success) {
         this.$message({
           message: "退出成功！",
           type: "success"
