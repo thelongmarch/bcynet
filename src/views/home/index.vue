@@ -30,19 +30,33 @@
                 :horizontal-order="false"
               >
                 <div class="row">
-                  <div v-masonry-tile class="col-md-4" v-for="(post, index) in allImgs">
-                    <div class="card m-4" style="width: 18rem;">
-                      <img
-                        class="card-img-top"
-                        src="http://via.placeholder.com/350x150"
-                        alt="Card image cap"
-                      />
-                      <div class="card-body">
+                   <div v-masonry-tile class="col-md-4" v-for="(post, index) in allImgs">
+                    <div class="card-main">
+                      <div class="pubu-main">
+                        <div class="title">
+                          <img class="title_img_box" :src="headImg" alt />
+                          <span class="title-txt">百合と绯桜</span>
+                        </div>
+                        <div class="desc">
+                          <span>{{ post.title }}</span>
+                        </div>
+                        <div class="pubu-img">
+                          <img
+                            class="card-img-top"
+                            src=" https://p9-bcy.byteimg.com/img/banciyuan/user/104544643606/item/c0r3g/wzof9eqlkwbmdoxeofhtl2pqyc7mvuwx.jpg~tplv-banciyuan-w650.image"
+                            alt="Card image cap"
+                            width="100%"
+                          />
+                        </div>
+                        <div class="pubu-footer"></div>
+                      </div>
+
+                      <!-- <div class="card-body">
                         <h5 class="card-title">
                           <strong>{{ post.title }}</strong>
                         </h5>
                         <p class="card-text">{{ smartTrim(post.content, 100) }}</p>
-                      </div>
+                      </div>-->
                     </div>
                   </div>
                 </div>
@@ -146,6 +160,7 @@ import sw3 from "@/assets/sw/sw3.jpg";
 import sw4 from "@/assets/sw/sw4.jpg";
 import sw5 from "@/assets/sw/sw5.jpg";
 import download from "@/assets/download.png";
+import headImg from "@/assets/a.jpg";
 // require styles
 import "swiper/dist/css/swiper.css";
 
@@ -180,6 +195,7 @@ export default {
       sw3: sw3,
       sw4: sw4,
       sw5: sw5,
+      headImg: headImg,
       loginObj: {
         phone: "",
         ems: ""
@@ -241,8 +257,16 @@ export default {
         pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
       }
       return pwd;
+    },  
+    getAllImg() {
+      for (var i = 0; i < 16; i++) {
+        this.allImgs.push({
+          title: this.randomString(30),
+          content: this.randomString(100)
+        });
+      }
     },
-    async getAllImg() {
+    async getAllImg1() {
       let temp = {
         category: "",
         pageNum: this.pageMsg.currentPage,
@@ -277,7 +301,7 @@ export default {
         window.document.documentElement.clientHeight;
 
       if (scrollHeight >= maxHeight - 200) {
-        this.getPosts();
+        this.getAllImg();
       }
     },
     smartTrim(string, maxLength) {
@@ -314,13 +338,14 @@ export default {
 };
 </script>
 
-<style  lang="less">
+<style scoped lang="less">
 .idx-main {
   height: 100%;
   width: 100%;
 }
 .main {
   height: 100%;
+  padding-top: 70px;
 }
 .header-spe {
   z-index: 101;
@@ -329,8 +354,7 @@ export default {
 }
 .page-main {
   width: 1200px;
-  margin: 70px auto 0;
-  border: 1px solid;
+  margin: 0 auto;  
   .left-main {
     width: 870px;
     min-width: 870px;
@@ -470,11 +494,57 @@ export default {
   margin-top: 15px;
 }
 /* 瀑布流 */
+/* 瀑布流 */
 .feed-wrapper {
   width: 100%;
   margin-top: 30px;
 }
-.col-md-4{
+.col-md-4 {
   display: inline-block;
+  margin: 0 4px 12px 4px;
+}
+.card-main {
+  width: 425px;
+  padding: 16px 16px 0;  
+  background: white;
+  .title {
+    display: flex;
+    align-items: flex-start;
+    .title_img_box {
+      display: block;
+      margin-right: 8px;
+      width: 36px;
+      height: 36px;
+      position: relative;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 1px solid #f5f5f5;
+      border-radius: 50%;
+      display: block;
+    }
+    .title-txt {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      line-height: 1.4;
+      margin: auto 0;
+    }
+  }
+  .desc {
+    word-break: break-word;
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.57;
+  }
+  .pubu-img{
+    margin: 8px 0;    
+    img{
+          border-radius: 8px;
+      display: block;
+      border: 1px solid #f5f5f5;
+      max-width: 100%;
+    }
+  }
 }
 </style>

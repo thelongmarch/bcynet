@@ -21,38 +21,45 @@
               ref="oneRuleForm"
               class="demo-ruleForm add-activity"
             >
-              <el-form-item label="图片描述：" prop="picDesc" label-width="120px">
-                <el-input placeholder="请输入图片描述" :maxlength="20" v-model="oneRuleForm.picDesc"></el-input>
-              </el-form-item>
-              <el-form-item label="图片主题：" prop="title" label-width="120px">
-                <el-input placeholder="请输入图片主题" :maxlength="20" v-model="oneRuleForm.title"></el-input>
-              </el-form-item>
-              <el-form-item label="" prop="imgUrl" label-width="140px">
+              <el-form-item label prop="imgUrl" label-width="140px">
                 <div class="upload-img">
                   <el-upload
                     class="img-uploader"
                     ref="sbUpload"
-                    action="/snsmp-admin/admin/common/uploadActivityImage.do"
-                    :data="{type:'4',actType:'MT002'}"
+                    action="/xbg/common/upload"
+                    :headers="headers"
+                    :data="{}"
                     name="imageData"
                     :before-upload="tipBeforeShareUpload"
                     :show-file-list="false"
                     :on-success="tipHandleRedChild"
                     :multiple="false"
                   >
-                    <div class="img-wrap img-line" >
-                      <img :src="oneRuleForm.imgUrl" alt class="img_url" v-if="!!oneRuleForm.imgUrl" /> 
+                    <div class="img-wrap">
+                      <img
+                        :src="oneRuleForm.imgUrl"
+                        alt
+                        class="img_url"
+                        v-if="!!oneRuleForm.imgUrl"
+                      />
                       <i class="el-icon-plus avatar-uploader-icon" v-if="!oneRuleForm.imgUrl"></i>
                       <p v-if="!oneRuleForm.imgUrl">点击添加图片</p>
-                    </div>  
+                    </div>
                   </el-upload>
-                   <div class="el-upload__tip img-up"
-                    >图片大小不超过20M，格式为jpg、png、jpeg</div>
+                  <div class="el-upload__tip img-up">图片大小不超过20M，格式为jpg、png、jpeg</div>
                 </div>
+              </el-form-item>
+              <el-form-item label="图片描述：" prop="picDesc" label-width="120px" class="input-spe">
+                <el-input placeholder="请输入图片描述" :maxlength="20" v-model="oneRuleForm.picDesc"></el-input>
+              </el-form-item>
+              <el-form-item label="图片主题：" prop="title" label-width="120px" class="input-spe">
+                <el-input placeholder="请输入图片主题" :maxlength="20" v-model="oneRuleForm.title"></el-input>
               </el-form-item>
             </el-form>
           </div>
-          <div class="pub-btn"></div>
+        </div>
+        <div class="pub-btn">
+          <el-button type="danger" @click="publishFun('oneRuleForm')">提交发布</el-button>
         </div>
       </div>
       <!-- footer -->
@@ -66,6 +73,9 @@ import globalFun from "@/common/common";
 import globalInterface from "@/service/interface";
 import loginTop from "@/components/loginTop";
 import download from "@/assets/download.png";
+import download2 from "@/assets/download2.png";
+import store from "../../store";
+import $axios from 'axios'
 // require styles
 
 export default {
@@ -73,31 +83,129 @@ export default {
     loginTop
   },
   data() {
-    return {      
-      oneRuleForm: {        
-        imgUrl: "",//图片Url
-        title: "",//图片主题
-        picDesc: ""//图片描述
+    return {
+      oneRuleForm: {
+        imgUrl: "", //图片Url
+        title: "", //图片主题
+        picDesc: "" //图片描述
       },
-      rules:{}
-     
+      rules: {}
     };
   },
   created() {},
   //定义这个sweiper对象
-  computed: {},
+  computed: {
+    headers() {
+      return {
+        "auth-token": localStorage.getItem("Authorization")
+      };
+    }
+  },
   methods: {
     /* *************promise****************************** */
-
-    /* ***********字典项页面end******************************** */
-    tipBeforeShareUpload(){
-
+    // publishImg
+    publishPromise(params) {
+      return this.$axios(globalInterface.publishImg, params, "post", {
+        ajaxType: "json"
+      });
     },
-    tipHandleRedChild(){
-
+    /* ***********上传******************************** */
+    tipBeforeShareUpload(file) {
+      return this.checkImgSize(file, 20480);
+    },
+    checkImgSize(file, imgSize) {
+      let that = this;
+      let promise = new Promise(async function(resolve, reject) {
+        const isJPG =
+          file.type === "image/png" ||
+          file.type === "image/jpg" ||
+          file.type === "image/jpeg";
+        const isLt2M = file.size / 1024 < imgSize;
+        let sizeToast;
+        if (file.size / 1024 >= 1024) {
+          sizeToast = imgSize / 1024 + "M";
+        } else {
+          sizeToast = imgSize + "kb";
+        }
+        if (!isJPG) {
+          that.$message.error("上传图片只能是JPG/PNG/JPEG格式!");
+        }
+        if (!isLt2M) {
+          that.$message.error("上传图片大小不能超过 " + sizeToast + "!");
+        }
+        if (!(isJPG && isLt2M)) {
+          try {
+            throw new Error("图片不符合规则!");
+          } catch (e) {
+            reject(false);
+          }
+        }
+        resolve(isJPG && isLt2M);
+      });
+      return promise;
+    },
+    tipHandleRedChild(response, file, fileList) {
+      debugger;
+      //分享图标上传返回结果
+      // if (response.success) {
+      //   this.shareObj.electricApp.sharedPiceUrl = response.data.imageUrl;
+      // } else {
+      //   this.$message.error(response.errorMsg ? response.errorMsg : '系统异常');
+      // }
     },
 
-    init() {}
+    /* ***********发布******************************** */
+    publishFun(formName) {
+      let _self = this;
+       this.$refs[formName].validate(async (valid) => {
+            if (valid) {
+             _self.publishSureFun();
+            }
+          });
+    },
+    async publishSureFun() {
+      
+      let temp = {
+        imageList:[
+          {
+            category:'',
+            imgUrl:'https://www.baidu.com/img/bd_logo1.png',
+            picDesc:'图片描述',
+            title:'图片标题'
+
+          }
+        ]
+      }      
+      let baseUrl = process.env.NODE_ENV === 'production' ? productionUrl : '';      
+      let asyncBody = await $axios({
+          method: 'post',
+          baseURL: baseUrl + '/',
+          url: globalInterface.publishImg,
+          headers: {'auth-token': localStorage.getItem("Authorization"),'Content-Type': 'application/x-www-form-urlencoded'},
+          params: temp
+        })
+      let res = asyncBody.status;    
+      debugger  
+      if (res === 200) {
+        this.$message({
+          message: "退出成功！",
+          type: "success"
+        });
+        this.$router.push("/home");
+       
+
+      } else {
+        this.$message({
+          message: res.returnMsg,
+          type: "warning"
+        });
+      }
+   
+    },
+    /* ***********init******************************** */
+    init() {
+      console.log(this.headers);
+    }
   },
   mounted() {
     this.init();
@@ -118,15 +226,6 @@ export default {
   z-index: 101;
   position: fixed;
   top: 0;
-}
-.publish-main {
-  width: 730px; 
-  border: 1px solid;
-  box-sizing: border-box;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.1);
-  background-color: white;
-  border-radius: 4px;
-  margin: 0 auto;  
 }
 
 /* 登录 */
@@ -238,37 +337,71 @@ export default {
   margin-top: 15px;
 }
 //pub
-.pub-main{
-  .pub-head{
-    .head-title{
-        box-sizing: border-box;
-        width: 100%;
-        height: 50px;
-        border-bottom: 1px solid #EBECED;
-        padding-left: 20px;
-        font-size: 18px;
-        line-height: 50px;
-        color: #333;
-        font-weight: bold;            
-    }
+.publish-main {
+  width: 730px;
+  margin: 0 auto;
+}
+.pub-main {
+  box-sizing: border-box;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 4px;
 
+  .pub-head {
+    .head-title {
+      box-sizing: border-box;
+      width: 100%;
+      height: 50px;
+      border-bottom: 1px solid #ebeced;
+      padding-left: 20px;
+      font-size: 18px;
+      line-height: 50px;
+      color: #333;
+      font-weight: bold;
+    }
   }
-   .upload-img .img-uploader {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
+  .pub-content {
+    padding-bottom: 50px;
+  }
+  .upload-img {
+    .img-uploader {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      overflow: hidden;
+      width: 178px;
+      height: 178px;
+    }
   }
   .upload-img .img-uploader:hover {
-    border-color: #409EFF;
+    border-color: #409eff;
   }
-  .img-wrap{
-
+  .img-wrap {
+    width: 178px;
+    height: 178px;
+    position: relative;
+    .avatar-uploader-icon {
+      display: inline-block;
+      margin-top: 62px;
+      font-size: 28px;
+    }
+    .img_url {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      max-height: 178px;
+      max-width: 178px;
+    }
   }
+  .input-spe {
+    .el-input {
+      width: 300px;
+    }
+  }
+}
+.pub-btn {
+  margin-top: 20px;
+  text-align: center;
 }
 </style>

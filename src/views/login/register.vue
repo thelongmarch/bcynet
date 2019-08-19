@@ -233,7 +233,7 @@ export default {
 };
 </script>
 
-<style  lang="less">
+<style scoped lang="less">
 .idx-main {
   height: 100%;
   width: 100%;

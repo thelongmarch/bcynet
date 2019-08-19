@@ -288,7 +288,7 @@ export default {
   width: 100%;
   .main {
     height: 100%;
-    width: 100%;
+    width: 100%;    
   }
   .body-main {
     padding-top: 60px;
