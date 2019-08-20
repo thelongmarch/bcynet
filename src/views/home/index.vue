@@ -26,7 +26,7 @@
                 v-masonry
                 transition-duration="0s"
                 item-selector=".card-main"
-                :origin-top="true"
+                :origin-top="false"
                 :horizontal-order="false"
               >
                 <!-- <div class="row">
