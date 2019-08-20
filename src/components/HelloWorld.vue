@@ -357,12 +357,12 @@ import loading from './loading'
 
       switchCol(col){
         this.col = col
-        // console.log(this.col)
+        
       },
       getGitHub(){
         fetch('https://api.github.com/repos/AwesomeDevin/vue-waterfall2').then((data)=>{
           data.json().then((res)=>{
-            // console.log(res)
+           
             this.gitHubData = res
           })
         })
@@ -371,13 +371,12 @@ import loading from './loading'
       loadmore(num){
         // Vue.set(this.data[index],'liked',true)
         // const obj = {c:123,d:456}
-        // const {c:a,d:b} = obj
-        console.log('loadmore')
+        // const {c:a,d:b} = obj       
         this.loading = true
         setTimeout(()=>{
           this.data = this.data.concat(this.originData,this.originData)
           this.loading = false
-          // console.log(this.data.length)
+          
         },1000)
         // this.$waterfall.resize()
       },

@@ -157,8 +157,7 @@ export default {
         nationCode: "",
         phone: this.regObj.phone
       };
-      let res = await this.getCodePromise(temp);
-      debugger;
+      let res = await this.getCodePromise(temp);     
       if (res.success) {
         this.btnShow = false;
         this.secNum = 60;

@@ -212,8 +212,7 @@ export default {
         }
       }
 
-      let res = await this.loginPromise(temp);
-      debugger;
+      let res = await this.loginPromise(temp);  
       if (res.success) {
         this.$message({
           message: "登录成功！",
@@ -249,8 +248,7 @@ export default {
         nationCode: "",
         phone: this.loginObj.phone
       }
-      let res = await this.getCodePromise(temp);
-      debugger;
+      let res = await this.getCodePromise(temp);    
       if (res.success) {
         this.btnShow = false;
         this.secNum = 60;

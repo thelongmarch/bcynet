@@ -20,8 +20,8 @@
         <div class="right-content">
           <div class="right-home">
             <!-- <img :src="home" alt="" width="24px">  -->
-            <span class="home-img"></span>
-            <span class="home-title">首页</span>
+            <span class="home-img" @click="goWebsit"></span>
+            <span class="home-title" @click="goWebsit">首页</span>
           </div>
           <div class="right-bell">
             <!-- <img :src="bell" alt width="24px" /> -->
@@ -115,6 +115,7 @@ import header from "@/assets/header.png";
 import picture from "@/assets/picture.png";
 import $axios from 'axios'
 import globalInterface from "@/service/interface";
+import productionUrl from '../service/env'
 
 export default {
   data() {
@@ -196,7 +197,9 @@ export default {
       }
     }
   },
-  mounted() {}
+  mounted() {
+   
+  }
 };
 </script>
 

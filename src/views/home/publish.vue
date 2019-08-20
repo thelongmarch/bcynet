@@ -76,7 +76,8 @@ import download from "@/assets/download.png";
 import download2 from "@/assets/download2.png";
 import store from "../../store";
 import $axios from 'axios'
-// require styles
+import productionUrl from '../../service/env'
+
 
 export default {
   components: {
@@ -89,7 +90,30 @@ export default {
         title: "", //图片主题
         picDesc: "" //图片描述
       },
-      rules: {},
+      rules: {
+        imgUrl: [
+          {
+            required: true,
+            message: "请上传图片！",
+            trigger: "change"
+          }         
+        ],
+        picDesc: [
+          {
+            required: true,
+            message: "请输入图片描述",
+            trigger: "change"
+          }         
+        ],
+        title: [
+          {
+            required: true,
+            message: "请输入图片主题",
+            trigger: "change"
+          }         
+        ],
+
+      },
       actionUrl:''
     };
   },
@@ -202,7 +226,7 @@ export default {
     /* ***********init******************************** */
     init() {
       let baseUrl =  process.env.NODE_ENV === 'production' ? productionUrl : '';  
-      this.actionUrl = !!baseUrl?baseUrl+'/xbg/common/upload':'/xbg/common/upload';
+      this.actionUrl = !!baseUrl?baseUrl+'/xbg/common/upload':'/xbg/common/upload';      
     }
   },
   mounted() {

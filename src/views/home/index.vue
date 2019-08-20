@@ -24,7 +24,7 @@
             <div id="vue-instance" class="container">
               <div
                 v-masonry
-                transition-duration="0.3s"
+                transition-duration="0s"
                 item-selector=".card-main"
                 :origin-top="true"
                 :horizontal-order="false"
@@ -369,8 +369,7 @@ export default {
         }
       }
 
-      let res = await this.loginPromise(temp);
-      debugger;
+      let res = await this.loginPromise(temp);      
       if (res.success) {
         this.$message({
           message: "登录成功！",
@@ -406,8 +405,7 @@ export default {
         nationCode: "",
         phone: this.loginObj.phone
       }
-      let res = await this.getCodePromise(temp);
-      debugger;
+      let res = await this.getCodePromise(temp);     
       if (res.success) {
         this.btnShow = false;
         this.secNum = 60;
@@ -461,7 +459,7 @@ export default {
         title: ""
       }
       let res = await this.showAllPromise(temp);
-      debugger
+      
       if (res.success) {
        let data = res.data;
        if(data.list.length>0){
@@ -504,9 +502,7 @@ export default {
       );
     },
     init() {
-      // setInterval(() => {
-      //   console.log("simulate async data");
-      //   debugger
+      // setInterval(() => {           
       //   if (this.swiperSlides.length < 10) {
       //     this.swiperSlides.push(this.swiperSlides.length + 1);
       //   }

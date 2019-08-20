@@ -53,7 +53,7 @@
                   <div v-masonry-tile class="card-main" v-for="(itemObj, index) in allImgs">
                     <div class="pubu-main">
                       <div class="title">
-                        <img class="title_img_box" :src="headImg" alt />
+                        <img class="title_img_box" :src="headImg" alt :οnerrοr="errorImg"/>
                         <span class="title-txt">百合と绯桜</span>
                       </div>
                       <div class="desc">
@@ -187,6 +187,7 @@ import sw5 from "@/assets/loginsw/loginbar5.jpg";
 import sw6 from "@/assets/loginsw/loginbar6.jpeg";
 import download from "@/assets/download.png";
 import headImg from "@/assets/a.jpg";
+import sunhuai from "@/assets/sunhuai.png";
 // require styles
 import "swiper/dist/css/swiper.css";
 
@@ -222,6 +223,7 @@ export default {
       sw4: sw4,
       sw5: sw5,
       sw6: sw6,
+      sunhuai: sunhuai,
       headImg: headImg,
       download: download, //下载图片
       allImgs: [],
@@ -229,7 +231,10 @@ export default {
         currentPage: 1,
         total: 0,
         pageSize: 10
-      }
+      },
+      errorImg: 'this.src="' + require('../../assets/sunhuai.png') + '"'
+      
+
     };
   },
   created() {
@@ -292,8 +297,7 @@ export default {
         picDesc: "",
         title: ""
       };
-      let res = await this.showAllPromise(temp);
-      debugger;
+      let res = await this.showAllPromise(temp);      
       if (res.success) {
         let data = res.data;
         if (data.list.length > 0) {
@@ -335,9 +339,7 @@ export default {
       );
     },
     init() {
-      // setInterval(() => {
-      //   console.log("simulate async data");
-      //   debugger
+      // setInterval(() => {     
       //   if (this.swiperSlides.length < 10) {
       //     this.swiperSlides.push(this.swiperSlides.length + 1);
       //   }
