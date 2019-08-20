@@ -14,7 +14,7 @@ let baseUrl = process.env.NODE_ENV === 'production' ? productionUrl : ''
 
 const instance = axios.create({
   baseURL: baseUrl + '/',
-  withCredentials: true,
+  withCredentials: false,
   timeout: 10000
 })
 

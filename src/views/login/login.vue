@@ -46,7 +46,7 @@
                 label
                 prop="password"   
               >
-                <el-input v-model="loginObj.password" placeholder="您的密码"></el-input>
+                <el-input v-model="loginObj.password" placeholder="您的密码" show-password></el-input>
               </el-form-item>            
             </el-form>
             </div>          

@@ -26,7 +26,7 @@
                   <el-upload
                     class="img-uploader"
                     ref="sbUpload"
-                    action="/xbg/common/upload"
+                    :action="actionUrl"
                     :headers="headers"
                     :data="{picNum:1}"
                     name="file"
@@ -89,7 +89,8 @@ export default {
         title: "", //图片主题
         picDesc: "" //图片描述
       },
-      rules: {}
+      rules: {},
+      actionUrl:''
     };
   },
   created() {},
@@ -200,7 +201,8 @@ export default {
     },
     /* ***********init******************************** */
     init() {
-      console.log(this.headers);
+      let baseUrl =  process.env.NODE_ENV === 'production' ? productionUrl : '';  
+      this.actionUrl = !!baseUrl?baseUrl+'/xbg/common/upload':'/xbg/common/upload';
     }
   },
   mounted() {

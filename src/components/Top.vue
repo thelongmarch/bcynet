@@ -3,7 +3,7 @@
     <div class="left-main">
       <img :src="log" alt class="log" @click="goWebsit" />
       <router-link to="/home" class="link-list">首页</router-link>
-      <router-link to="/home" class="link-list">绘画</router-link>
+      <!-- <router-link to="/home" class="link-list">绘画</router-link>
       <router-link to="/home" class="link-list">写作</router-link>
       <router-link to="/home" class="link-list">COS</router-link>
       <router-link to="/home" class="link-list">问答</router-link>
@@ -15,7 +15,7 @@
       <router-link to="/" class="link-list">
         <img :src="phone" alt class="phone-spe" />
         <span>下载APP</span>
-      </router-link>
+      </router-link> -->
     </div>
     <div class="right-main">
       <div class="search-main">
@@ -30,7 +30,7 @@
       </div>
       <router-link to="/login" class="link-list">登录</router-link>
       <router-link to="/register" class="link-list">注册</router-link>
-      <router-link to="/">
+      <router-link to="/login">
         <div class="publish-main">
           <img :src="publish" alt class="pub-img" />
           <span>发布</span>
