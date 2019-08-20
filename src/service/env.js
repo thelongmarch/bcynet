@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'development') {
   // 测试机
   // baseUrl = 'http://192.168.31.100:8083';
   // 本地
-  baseUrl = 'http://58.213.190.99:19050'
+  baseUrl = 'http://47.99.208.154:8812'
   // was生产机
   // baseUrl = 'http://fbi.paic.com.cn';
 }
