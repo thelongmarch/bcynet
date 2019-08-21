@@ -53,7 +53,7 @@
                   <div v-masonry-tile class="card-main" v-for="(itemObj, index) in allImgs">
                     <div class="pubu-main">
                       <div class="title">
-                        <img class="title_img_box" :src="headImg" alt :οnerrοr="errorImg"/>
+                        <img class="title_img_box" :src="headImg" alt />
                         <span class="title-txt">百合と绯桜</span>
                       </div>
                       <div class="desc">
@@ -63,8 +63,9 @@
                         <img
                           class="card-img-top"
                           :src="itemObj.imgUrl"
-                          alt="Card image cap"
+                          alt="图片加载失败"
                           width="100%"
+                           @error="errorUserPhoto(itemObj)"
                         />
                       </div>
                       <div class="pubu-footer"></div>
@@ -187,7 +188,7 @@ import sw5 from "@/assets/loginsw/loginbar5.jpg";
 import sw6 from "@/assets/loginsw/loginbar6.jpeg";
 import download from "@/assets/download.png";
 import headImg from "@/assets/a.jpg";
-import sunhuai from "@/assets/sunhuai.png";
+import destoryImgUrl from "@/assets/sunhuai.png";
 // require styles
 import "swiper/dist/css/swiper.css";
 
@@ -222,8 +223,7 @@ export default {
       sw3: sw3,
       sw4: sw4,
       sw5: sw5,
-      sw6: sw6,
-      sunhuai: sunhuai,
+      sw6: sw6,    
       headImg: headImg,
       download: download, //下载图片
       allImgs: [],
@@ -232,7 +232,7 @@ export default {
         total: 0,
         pageSize: 10
       },
-      errorImg: 'this.src="' + require('../../assets/sunhuai.png') + '"'
+      // errorImg: 'this.src="' + require('../../assets/sunhuai.png') + '"'
       
 
     };
@@ -268,8 +268,11 @@ export default {
         ajaxType: "json"
       });
     },
-    /* ***********字典项页面end******************************** */
-
+    /* ***********图片异常******************************** */
+     errorUserPhoto(item){      
+      item.imgUrl = destoryImgUrl;
+    },
+    /* ******************************************* */
     randomString(len) {
       len = len || 32;
       var $chars =

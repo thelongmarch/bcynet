@@ -44,13 +44,13 @@
                           <img
                             class="card-img-top"
                             :src="itemObj.imgUrl"
-                            alt="Card image cap"
-                            width="100%"
+                            alt="图片加载失败"
+                            width="100%"                           
+                            @error="errorUserPhoto(itemObj)"
                           />
                         </div>
                         <div class="pubu-footer"></div>
                       </div>
-
                       <!-- <div class="card-body">
                         <h5 class="card-title">
                           <strong>{{ post.title }}</strong>
@@ -183,6 +183,7 @@ import sw4 from "@/assets/sw/sw4.jpg";
 import sw5 from "@/assets/sw/sw5.jpg";
 import download from "@/assets/download.png";
 import headImg from "@/assets/a.jpg";
+import destoryImgUrl from "@/assets/sunhuai.png";
 // require styles
 import "swiper/dist/css/swiper.css";
 
@@ -217,7 +218,8 @@ export default {
       sw3: sw3,
       sw4: sw4,
       sw5: sw5,
-      headImg: headImg,
+      headImg: headImg,    
+      // sunhuai: sunhuai,    
       loginObj: {
         phone: "",        
         password: "",
@@ -279,7 +281,7 @@ export default {
 
       },
       btnShow:true,//获取验证码
-      secNum:'',//秒
+      secNum:''//秒     
     };
   },
   watch: {
@@ -326,6 +328,10 @@ export default {
         ajaxType: "json"
       });
     },  
+    /* ***********图片******************************** */
+    errorUserPhoto(item){      
+      item.imgUrl = destoryImgUrl;
+    },
     /* ***********注册登录模板******************************** */
     registFun(){      
       this.$router.push("/register");
@@ -462,7 +468,7 @@ export default {
       
       if (res.success) {
        let data = res.data;
-       if(data.list.length>0){
+       if(data.list.length>0){        
          this.allImgs = this.allImgs.concat(data.list);
          this.pageMsg.total = data.total;
        }

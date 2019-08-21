@@ -84,7 +84,7 @@ export default {
         password: "",
         code: ""
       },
-      loginImg: loginImg,
+      loginImg: loginImg,     
       loginStatus: 1, //1短信验证2密码
       loginPlace: {
         phone: "手机号",
@@ -294,8 +294,8 @@ export default {
   }
   .login-main {
     height: 100%;
-    width: 100%;
-    background: url("../../assets/bg-login.png") repeat;
+    width: 100%;    
+    background: url("~@/assets/bg-login.png") repeat;
     .login-content {
       padding: 40px;
       box-sizing: border-box;

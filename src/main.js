@@ -35,7 +35,6 @@ Vue.use(VueMasonryPlugin)
 Vue.config.productionTip = false
 Object.defineProperty(Vue.prototype, '$axios', { value: fetch })
 
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -173,10 +173,21 @@ export default {
       if(response.success){
         this.oneRuleForm.imgUrl = response.data;
       }else{
-         this.$message({
-          message: response.returnMsg,
-          type: "warning"
-        });
+
+        if(response.returnCode==="10100"){
+          this.$message({
+            message: "登录过期失效，请重新登录！",
+            type: "warning"
+          });
+           this.$router.push({name: 'login'})
+        }else{
+          this.$message({
+            message: response.returnMsg,
+            type: "warning"
+          });
+        }
+
+       
       }
     },
     /* ***********发布******************************** */
@@ -216,10 +227,22 @@ export default {
        
 
       } else {
-        this.$message({
-          message: res.returnMsg,
-          type: "warning"
-        });
+
+         if(res.returnCode==="10100"){
+          this.$message({
+            message: "登录过期失效，请重新登录！",
+            type: "warning"
+          });
+           this.$router.push({name: 'login'})
+        }else{
+            this.$message({
+              message: res.returnMsg,
+              type: "warning"
+            });
+        }
+
+
+      
       }
    
     },
