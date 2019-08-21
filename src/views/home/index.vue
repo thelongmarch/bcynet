@@ -38,7 +38,7 @@
                           <span class="title-txt">百合と绯桜</span>
                         </div>
                         <div class="desc">
-                          <span>{{ itemObj.title}}</span>
+                          <span>{{ itemObj.picDesc}}</span>
                         </div>
                         <div class="pubu-img">
                           <img
